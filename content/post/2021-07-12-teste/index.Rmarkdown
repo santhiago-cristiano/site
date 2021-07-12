@@ -1,0 +1,34 @@
+---
+title: Teste
+author: Eu
+date: '2021-07-12'
+slug: []
+categories: []
+tags: []
+type: ''
+subtitle: ''
+image: ''
+---
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet ex eu lectus sodales tincidunt non eu magna. Proin dapibus libero sit amet erat semper, id consequat metus condimentum. Fusce cursus nec neque eu vulputate. Curabitur tempor sit amet nunc eget malesuada. Integer in luctus sapien, eget blandit sem. Aliquam blandit, tortor vel rhoncus molestie, nisi ipsum interdum orci, quis pharetra tellus libero sed arcu. Sed dapibus massa at lacus vulputate placerat.
+
+
+```{r}
+ggplot2::ggplot(mtcars, ggplot2::aes(factor(cyl), mpg)) +
+  ggplot2::geom_point()
+```
+
+```{r}
+library(ggplot2)
+oplot <- ggplot(Orange, aes(x = age, 
+                   y = circumference, 
+                   colour = Tree)) +
+  geom_point() +
+  geom_line() +
+  guides(colour = "none") +
+  theme_bw()
+oplot
+```
+
+
+![grafico](teste.svg)
