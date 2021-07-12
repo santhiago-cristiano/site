@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Santhiago Cristiano</title>
-    <link>https://github.com/santhiago-cristiano/site/categories/r/</link>
+    <link>https://santhiago-cristiano.github.io/site/categories/r/</link>
     <description>Recent content in R on Santhiago Cristiano</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <managingEditor>youremail@domain.com (Santhiago Cristiano)</managingEditor>
     <webMaster>youremail@domain.com (Santhiago Cristiano)</webMaster>
-    <lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate><atom:link href="https://github.com/santhiago-cristiano/site/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/categories/r/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello R Markdown</title>
-      <link>https://github.com/santhiago-cristiano/site/post/2020-12-01-r-rmarkdown/</link>
+      <link>https://santhiago-cristiano.github.io/site/post/2020-12-01-r-rmarkdown/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <author>youremail@domain.com (Santhiago Cristiano)</author>
-      <guid>https://github.com/santhiago-cristiano/site/post/2020-12-01-r-rmarkdown/</guid>
+      <guid>https://santhiago-cristiano.github.io/site/post/2020-12-01-r-rmarkdown/</guid>
       <description>R MarkdownThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents.</description>
     </item>
     
