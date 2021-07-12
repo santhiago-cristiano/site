@@ -18,7 +18,7 @@ Params:
   dateFormat: 02/01/2006
   delayDisqus: yes
   favicon: img/my-favicon.ico
-  logo: img/foto-perfil.jpg
+  logo: img/logo.png
   mainSections:
     - post
     - posts
@@ -28,7 +28,7 @@ Params:
   showRelatedPosts: yes
   socialShare: yes
   #homeTitle: Título
-  subtitle: R, Python e Ciência de Dados
+  subtitle: Esse é meu site pessoal. Aqui escrevo sobre R e Python.
   useHLJS: yes
   wordCount: yes
 Author:
@@ -36,9 +36,9 @@ Author:
   #bandcamp: username
   #bitbucket: username
   #codepen: username
-  email: youremail@domain.com
+  email: santhiagocristiano.og@gmail.com
   #facebook: username
-  github: username
+  github: santhiago-cristiano
   #gitlab: username
   #instagram: username
   #itchio: username
