@@ -90,7 +90,7 @@ menu:
       url: tags
       weight: 3
 
-#markup:
-#  goldmark:
-#    renderer:
-#      unsafe: true
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
