@@ -2,6 +2,7 @@ baseurl: https://santhiago-cristiano.github.io/site/
 languageCode: en
 DefaultContentLanguage: br
 title: Santhiago Cristiano
+description: Teste Descrição
 theme: beautifulhugo
 metaDataFormat: yaml
 summarylength: 20
@@ -17,8 +18,8 @@ Params:
   commit: no
   dateFormat: 02/01/2006
   delayDisqus: yes
-  favicon: img/my-favicon.ico
-  logo: img/logo.png
+  favicon: img/myfavicon.ico
+  logo: img/SC.png
   mainSections:
     - post
     - posts
@@ -28,7 +29,7 @@ Params:
   showRelatedPosts: yes
   socialShare: yes
   #homeTitle: Título
-  subtitle: Esse é meu site pessoal. Aqui escrevo sobre R e Python.
+  subtitle: Este é meu site pessoal. Aqui escrevo sobre R e Python.
   useHLJS: yes
   wordCount: yes
 Author:
