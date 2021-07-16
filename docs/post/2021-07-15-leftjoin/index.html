@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="br" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Como mesclar conjuntos de dados no R. Parte I: left_join() - Santhiago Cristiano</title>
+  <meta name="description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
+  <meta name="author" content="Santhiago Cristiano"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Santhiago Cristiano",
+    
+    "url": "https:\/\/santhiago-cristiano.github.io\/site\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/santhiago-cristiano.github.io\/site\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/santhiago-cristiano.github.io\/site\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/santhiago-cristiano.github.io\/site\/post\/2021-07-15-leftjoin\/",
+          "name": "Como mesclar conjuntos de dados no r. parte i left join()"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Santhiago Cristiano"
+  },
+  "headline": "Como mesclar conjuntos de dados no R. Parte I: left_join()",
+  "description" : "Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.",
+  "inLanguage" : "br",
+  "wordCount":  2664 ,
+  "datePublished" : "2021-07-16T00:00:00",
+  "dateModified" : "2021-07-16T00:00:00",
+  "image" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
+  "keywords" : [ "joins, dplyr, left join, R" ],
+  "mainEntityOfPage" : "https:\/\/santhiago-cristiano.github.io\/site\/post\/2021-07-15-leftjoin\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/santhiago-cristiano.github.io\/site\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Como mesclar conjuntos de dados no R. Parte I: left_join()" />
+<meta property="og:description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
+<meta property="og:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
+<meta property="og:url" content="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Santhiago Cristiano" />
+
+  <meta name="twitter:title" content="Como mesclar conjuntos de dados no R. Parte I: left_join()" />
+  <meta name="twitter:description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função …">
+  <meta name="twitter:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://santhiago-cristiano.github.io/site/img/myfavicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.85.0" />
+  <link rel="alternate" href="https://santhiago-cristiano.github.io/site/index.xml" type="application/rss+xml" title="Santhiago Cristiano"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/highlight.min.css" /><link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Ver navegação</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://santhiago-cristiano.github.io/site/">Santhiago Cristiano</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Posts" href="/site/">Posts</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Sobre" href="/site/page/about/">Sobre</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contato" href="/site/page/contact/">Contato</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/site/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Santhiago Cristiano" href="https://santhiago-cristiano.github.io/site/">
+            <img class="avatar-img" src="https://santhiago-cristiano.github.io/site/img/SC.png" alt="Santhiago Cristiano" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Como mesclar conjuntos de dados no R. Parte I: left_join()</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Postado em 16/07/2021
+  
+  
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Santhiago Cristiano
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função <code>left_join()</code> do pacote <code>{dplyr}</code>.</p>
+<h1 id="base-de-dados">Base de dados</h1>
+<p>Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos <a href="https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10">aqui</a>. Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin/dados">GitHub</a>.</p>
+<h1 id="pacotes">Pacotes</h1>
+<p>Inicialmente, vamos carregar os pacotes que serão utilizados:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">abjData</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">glue</span><span class="p">)</span>
+</code></pre></div><p>Se ainda não possui esses pacotes instalados, você pode instalar todos de uma só vez rodando o comando abaixo:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;readr&#34;</span><span class="p">,</span> <span class="s">&#34;dplyr&#34;</span><span class="p">,</span> <span class="s">&#34;abjData&#34;</span><span class="p">,</span> <span class="s">&#34;purrr&#34;</span><span class="p">,</span> <span class="s">&#34;glue&#34;</span><span class="p">))</span>
+</code></pre></div><h1 id="importando-os-dados-para-o-r">Importando os dados para o R</h1>
+<p>Para importar nossos dados para o R, primeiramente utilizaremos a função <code>list.files()</code>, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lista todos os arquivos csv na pasta</span>
+
+<span class="n">arquivos_csv</span> <span class="o">&lt;-</span> <span class="nf">list.files</span><span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s">&#34;./dados/&#34;</span><span class="p">,</span>
+  <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#34;*.csv&#34;</span><span class="p">,</span>
+  <span class="n">full.names</span> <span class="o">=</span> <span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">arquivos_csv</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## [1] &#34;./dados/2010-mortes-infantis.csv&#34; &#34;./dados/2011-mortes-infantis.csv&#34;
+## [3] &#34;./dados/2012-mortes-infantis.csv&#34;
+</code></pre></div><p>Em seguida, podemos ler todos esses arquivos de uma tacada só utilizando a função <code>read_csv2()</code> em conjunto com a <code>map()</code> dos pacotes <code>{readr}</code> e <code>{purrr}</code>, respectivamente. <code>read_csv2()</code> nos permite ler arquivos csv separados por <code>;</code> e o <code>map()</code> vai simplesmente aplicar essa função em cada um dos três elementos do vetor <code>arquivos_csv</code> e nos retornar uma lista de data frames.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lendo todos os arquivos e armazenando numa lista</span>
+
+<span class="n">morte_infantil</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">(</span>
+  <span class="n">arquivos_csv</span><span class="p">,</span>
+  <span class="n">read_csv2</span><span class="p">,</span>
+  <span class="nf">locale</span><span class="p">(</span><span class="n">encoding</span> <span class="o">=</span> <span class="s">&#34;latin1&#34;</span><span class="p">),</span>
+  <span class="n">col_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  <span class="n">col_types</span> <span class="o">=</span> <span class="s">&#34;ccdi&#34;</span>
+<span class="p">)</span>
+
+<span class="c1"># atribuindo o ano como &#34;nome&#34; para cada um dos data frames da lista</span>
+
+<span class="nf">names</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="m">2010</span><span class="o">:</span><span class="m">2012</span>
+</code></pre></div><p>Como argumentos para <code>read_csv2()</code> passamos o encoding dos nossos arquivos csv dentro da função <code>locale()</code>, que neste caso é <code>latin1</code>. O <code>latin1</code> é apenas um dos diversos encodings existentes, para saber mais, <a href="https://en.wikipedia.org/wiki/Character_encoding">clique aqui</a>. Além do encoding, passamos <code>col_names = TRUE</code>, para que a primeira linha dos nossos arquivos sejam reconhecidas como os nomes das colunas. Podemos ainda definir explicitamente o tipo de cada coluna com <code>col_types</code>. Nos dados temos 4 colunas, então, a primeira e a segunda coluna serão do tipo <code>c = character</code>, a terceira do tipo <code>d = double</code> e a última do tipo <code>i = integer</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># visualizando a lista</span>
+
+<span class="n">morte_infantil</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## $`2010`
+## # A tibble: 2,386 x 4
+##    codigo municipio             total   ano
+##    &lt;chr&gt;  &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 110001 Alta Floresta D&#39;Oeste     5  2010
+##  2 110002 Ariquemes                29  2010
+##  3 110004 Cacoal                   14  2010
+##  4 110006 Colorado do Oeste         2  2010
+##  5 110007 Corumbiara                1  2010
+##  6 110008 Costa Marques             1  2010
+##  7 110009 Espigão D&#39;Oeste           3  2010
+##  8 110010 Guajará-Mirim            13  2010
+##  9 110011 Jaru                      8  2010
+## 10 110012 Ji-Paraná                31  2010
+## # ... with 2,376 more rows
+## 
+## $`2011`
+## # A tibble: 2,384 x 4
+##    codigo municipio             total   ano
+##    &lt;chr&gt;  &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 110001 Alta Floresta D&#39;Oeste     3  2011
+##  2 110002 Ariquemes                15  2011
+##  3 110004 Cacoal                   14  2011
+##  4 110005 Cerejeiras                2  2011
+##  5 110007 Corumbiara                1  2011
+##  6 110008 Costa Marques             1  2011
+##  7 110009 Espigão D&#39;Oeste           6  2011
+##  8 110010 Guajará-Mirim             5  2011
+##  9 110011 Jaru                      2  2011
+## 10 110012 Ji-Paraná                10  2011
+## # ... with 2,374 more rows
+## 
+## $`2012`
+## # A tibble: 2,313 x 4
+##    codigo municipio             total   ano
+##    &lt;chr&gt;  &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 110001 Alta Floresta D&#39;Oeste     1  2012
+##  2 110002 Ariquemes                14  2012
+##  3 110004 Cacoal                   12  2012
+##  4 110005 Cerejeiras                3  2012
+##  5 110006 Colorado do Oeste         2  2012
+##  6 110008 Costa Marques             2  2012
+##  7 110009 Espigão D&#39;Oeste           1  2012
+##  8 110010 Guajará-Mirim             3  2012
+##  9 110011 Jaru                      6  2012
+## 10 110012 Ji-Paraná                10  2012
+## # ... with 2,303 more rows
+</code></pre></div><p>Como pode ser visto, além do total de mortes infantis e do ano, os dados do DATASUS contém apenas os nomes dos municípios e os códigos de 6 dígitos referentes a cada um deles. Seria interessante também adicionarmos as regiões e os estados e substituirmos o código de 6 dígitos pelo código de 7 dígitos do IBGE. Para isso, importaremos a base de dados <code>muni</code>, do pacote <code>{abjData}</code>, que contém as colunas que desejamos acrescentar.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">glimpse</span><span class="p">(</span><span class="n">abjData</span><span class="o">::</span><span class="n">muni</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## Rows: 5,572
+## Columns: 16
+## $ muni_id       &lt;chr&gt; &#34;1100015&#34;, &#34;1100023&#34;, &#34;1100031&#34;, &#34;1100049&#34;, &#34;1100056&#34;, &#34;~
+## $ muni_id_6     &lt;chr&gt; &#34;110001&#34;, &#34;110002&#34;, &#34;110003&#34;, &#34;110004&#34;, &#34;110005&#34;, &#34;11000~
+## $ muni_nm       &lt;chr&gt; &#34;Alta Floresta D&#39;oeste&#34;, &#34;Ariquemes&#34;, &#34;Cabixi&#34;, &#34;Cacoal&#34;~
+## $ muni_nm_clean &lt;chr&gt; &#34;ALTA FLORESTA DOESTE&#34;, &#34;ARIQUEMES&#34;, &#34;CABIXI&#34;, &#34;CACOAL&#34;,~
+## $ uf_nm         &lt;chr&gt; &#34;Rondônia&#34;, &#34;Rondônia&#34;, &#34;Rondônia&#34;, &#34;Rondônia&#34;, &#34;Rondôni~
+## $ uf_sigla      &lt;chr&gt; &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;R~
+## $ uf_id         &lt;chr&gt; &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;11&#34;, &#34;1~
+## $ regiao_nm     &lt;chr&gt; &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;N~
+## $ tse_id        &lt;chr&gt; &#34;310&#34;, &#34;78&#34;, &#34;450&#34;, &#34;94&#34;, &#34;272&#34;, &#34;230&#34;, &#34;655&#34;, &#34;213&#34;, &#34;2~
+## $ rf_id         &lt;chr&gt; &#34;33&#34;, &#34;7&#34;, &#34;37&#34;, &#34;9&#34;, &#34;27&#34;, &#34;23&#34;, &#34;981&#34;, &#34;21&#34;, &#34;25&#34;, &#34;1&#34;~
+## $ bcb_id        &lt;chr&gt; &#34;43036&#34;, &#34;9393&#34;, &#34;44626&#34;, &#34;10746&#34;, &#34;42219&#34;, &#34;41210&#34;, &#34;46~
+## $ existia_1991  &lt;int&gt; 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,~
+## $ existia_2000  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,~
+## $ existia_2010  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,~
+## $ lon           &lt;dbl&gt; -62.27467, -62.95718, -60.63986, -61.32475, -61.26095, -~
+## $ lat           &lt;dbl&gt; -12.470169, -9.951900, -13.474894, -11.301234, -13.20351~
+</code></pre></div><p>Essa base de dados completa possui muitas colunas, mas não precisamos de todas elas. Para selecionar somente as colunas que desejamos, podemos utilizar a função <code>select()</code> do <code>{dplyr}</code>. Aqui também utilizo o <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">operador pipe (%&gt;%)</a> do <code>{magrittr}</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># carregando os dados auxiliares</span>
+
+<span class="n">auxiliar</span> <span class="o">&lt;-</span> <span class="n">abjData</span><span class="o">::</span><span class="n">muni</span> <span class="o">%&gt;%</span>
+  <span class="nf">select</span><span class="p">(</span><span class="n">muni_id</span><span class="p">,</span> <span class="n">muni_id_6</span><span class="p">,</span> <span class="n">uf_sigla</span><span class="p">,</span> <span class="n">regiao_nm</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">arrange</span><span class="p">(</span><span class="n">muni_id_6</span><span class="p">)</span>
+</code></pre></div><p>Dentro do <code>select()</code>, passamos como argumento os nomes das colunas que queremos selecionar:</p>
+<ul>
+<li><code>muni_id</code>: código de 7 dígitos;</li>
+<li><code>muni_id_6</code>: código de 6 dígitos que servirá como chave para fazermos o join com nossa base de dados do DATASUS;</li>
+<li><code>uf_sigla</code>e <code>regiao_nm</code>: siglas dos estados e nomes das regiões, respectivamente.</li>
+</ul>
+<p>O <code>arrange()</code> está apenas ordenando os dados em ordem crescente de acordo com o código de 6 dígitos.</p>
+<h1 id="dplyrleft_join">dplyr::left_join()</h1>
+<p>A função <code>left_join()</code> possui três argumentos principais:</p>
+<p><code>left_join(x, y, by)</code></p>
+<p><code>x</code> e <code>y</code>correpondem aos dois conjuntos de dados que desejamos mesclar, para o <code>by</code>, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente <code>by = &quot;nome da coluna&quot;</code>, já quando os nomes das colunas são diferentes, usamos <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code>. O <code>left_join()</code> irá retornar todas as linhas de <code>x</code> e todas as colunas de <code>x</code> e <code>y</code>. As linhas em <code>x</code> que não possuem uma correspondente em <code>y</code> são preenchidas automaticamente com <code>NA</code>.</p>
+<h2 id="exemplo-1">Exemplo 1</h2>
+<p>Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos duas tabelas, que chamarei de <code>tbl_1</code> e <code>tbl_2</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span><span class="n">cpf</span><span class="p">,</span> <span class="o">~</span><span class="n">nome</span><span class="p">,</span> <span class="o">~</span><span class="n">idade</span><span class="p">,</span>
+  <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;Maria&#34;</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span>
+  <span class="m">22222222222</span><span class="p">,</span> <span class="s">&#34;José&#34;</span> <span class="p">,</span> <span class="m">40</span><span class="p">,</span>
+  <span class="m">33333333333</span><span class="p">,</span> <span class="s">&#34;Fran&#34;</span> <span class="p">,</span> <span class="m">23</span><span class="p">,</span>
+  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Jõao&#34;</span> <span class="p">,</span> <span class="m">30</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">tbl_1</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 3
+##           cpf nome  idade
+##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1 11111111111 Maria    25
+## 2 22222222222 José     40
+## 3 33333333333 Fran     23
+## 4 44444444444 Jõao     30
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span><span class="n">cpf</span><span class="p">,</span> <span class="o">~</span><span class="n">cidade</span><span class="p">,</span> <span class="o">~</span><span class="n">estado</span><span class="p">,</span>
+  <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;São Paulo&#34;</span>     <span class="p">,</span> <span class="s">&#34;SP&#34;</span><span class="p">,</span>
+  <span class="m">22222222222</span><span class="p">,</span> <span class="s">&#34;Mossoró&#34;</span>       <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">33333333333</span><span class="p">,</span> <span class="s">&#34;Natal&#34;</span>         <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">tbl_2</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 3
+##           cpf cidade         estado
+##         &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 11111111111 São Paulo      SP    
+## 2 22222222222 Mossoró        RN    
+## 3 33333333333 Natal          RN    
+## 4 44444444444 Rio de Janeiro RJ
+</code></pre></div><p>Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R &amp; Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em uma única tabela, acrescentando as colunas de cidade e estado da <code>tbl_2</code> na <code>tbl_1</code>. Como fariamos isso usando o <code>left_join()</code>?</p>
+<p>Note que a coluna <code>cpf</code> é comum em ambas as tabelas, portanto, podemos usá-la como chave passando-a para o argumento <code>by</code>, dessa forma:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">left_join</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">tbl_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cpf&#34;</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 5
+##           cpf nome  idade cidade         estado
+##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 11111111111 Maria    25 São Paulo      SP    
+## 2 22222222222 José     40 Mossoró        RN    
+## 3 33333333333 Fran     23 Natal          RN    
+## 4 44444444444 Jõao     30 Rio de Janeiro RJ
+</code></pre></div><p>Alternativamente, o mesmo resultado pode ser obtido utilizando o pipe <code>%&gt;%</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cpf&#34;</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 5
+##           cpf nome  idade cidade         estado
+##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 11111111111 Maria    25 São Paulo      SP    
+## 2 22222222222 José     40 Mossoró        RN    
+## 3 33333333333 Fran     23 Natal          RN    
+## 4 44444444444 Jõao     30 Rio de Janeiro RJ
+</code></pre></div><p>Nesse exemplo, cada linha da coluna <code>cpf</code> da <code>tbl_1</code> possui uma linha idêntica na coluna <code>cpf</code> da <code>tbl_2</code>, por esse motivo, não foi retornado nenhum valor <code>NA</code>.</p>
+<h2 id="exemplo-2">Exemplo 2</h2>
+<p>Neste outro exemplo, farei algumas mudanças nas nossas tabelas:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span><span class="n">cpf</span><span class="p">,</span> <span class="o">~</span><span class="n">nome</span><span class="p">,</span> <span class="o">~</span><span class="n">idade</span><span class="p">,</span>
+  <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;Maria&#34;</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span>
+  <span class="m">22222222222</span><span class="p">,</span> <span class="s">&#34;José&#34;</span> <span class="p">,</span> <span class="m">40</span><span class="p">,</span>
+  <span class="m">33333333333</span><span class="p">,</span> <span class="s">&#34;Fran&#34;</span> <span class="p">,</span> <span class="m">23</span><span class="p">,</span>
+  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Jõao&#34;</span> <span class="p">,</span> <span class="m">30</span><span class="p">,</span>
+  <span class="m">55555555555</span><span class="p">,</span> <span class="s">&#34;Messi&#34;</span><span class="p">,</span> <span class="m">34</span>
+<span class="p">)</span>
+<span class="n">tbl_1</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 3
+##           cpf nome  idade
+##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1 11111111111 Maria    25
+## 2 22222222222 José     40
+## 3 33333333333 Fran     23
+## 4 44444444444 Jõao     30
+## 5 55555555555 Messi    34
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span><span class="n">cpf_cliente</span><span class="p">,</span> <span class="o">~</span><span class="n">cidade</span><span class="p">,</span> <span class="o">~</span><span class="n">estado</span><span class="p">,</span>
+  <span class="m">11111111111</span>    <span class="p">,</span> <span class="s">&#34;São Paulo&#34;</span>     <span class="p">,</span> <span class="s">&#34;SP&#34;</span><span class="p">,</span>
+  <span class="m">22222222222</span>    <span class="p">,</span> <span class="s">&#34;Mossoró&#34;</span>       <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">33333333333</span>    <span class="p">,</span> <span class="s">&#34;Natal&#34;</span>         <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">44444444444</span>    <span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span>
+<span class="p">)</span>
+<span class="n">tbl_2</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 3
+##   cpf_cliente cidade         estado
+##         &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 11111111111 São Paulo      SP    
+## 2 22222222222 Mossoró        RN    
+## 3 33333333333 Natal          RN    
+## 4 44444444444 Rio de Janeiro RJ
+</code></pre></div><p>Observe agora que a coluna <code>cpf</code> da <code>tbl_1</code> está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica na segunda tabela. Além disso, o nome da coluna com o CPF dos clientes está diferente na <code>tbl_2</code>. Neste caso, nosso join ficaria assim:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">left_join</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">tbl_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;cpf&#34;</span> <span class="o">=</span> <span class="s">&#34;cpf_cliente&#34;</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 5
+##           cpf nome  idade cidade         estado
+##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 11111111111 Maria    25 São Paulo      SP    
+## 2 22222222222 José     40 Mossoró        RN    
+## 3 33333333333 Fran     23 Natal          RN    
+## 4 44444444444 Jõao     30 Rio de Janeiro RJ    
+## 5 55555555555 Messi    34 &lt;NA&gt;           &lt;NA&gt;
+</code></pre></div><h1 id="mesclando-os-conjuntos-de-dados">Mesclando os conjuntos de dados</h1>
+<p>Agora que importamos todos os dados que precisamos e sabemos como funciona o <code>left_join()</code>, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos <code>by = c(&quot;codigo&quot; = &quot;muni_id_6&quot;)</code>.</p>
+<p>Uma das maneiras de fazer join em nossos dados é assim:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># 2010</span>
+<span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">&lt;-</span> <span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;codigo&#34;</span> <span class="o">=</span> <span class="s">&#34;muni_id_6&#34;</span><span class="p">))</span>
+
+<span class="c1"># 2011</span>
+<span class="n">morte_infantil[[</span><span class="s">&#34;2011&#34;</span><span class="n">]]</span> <span class="o">&lt;-</span> <span class="n">morte_infantil[[</span><span class="s">&#34;2011&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;codigo&#34;</span> <span class="o">=</span> <span class="s">&#34;muni_id_6&#34;</span><span class="p">))</span>
+
+<span class="c1"># 2012</span>
+<span class="n">morte_infantil[[</span><span class="s">&#34;2012&#34;</span><span class="n">]]</span> <span class="o">&lt;-</span> <span class="n">morte_infantil[[</span><span class="s">&#34;2012&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;codigo&#34;</span> <span class="o">=</span> <span class="s">&#34;muni_id_6&#34;</span><span class="p">))</span>
+</code></pre></div><p>No entanto, há uma outra forma de se fazer (que considero bem melhor) usando o <code>map()</code> do <code>{purrr}</code>. Para tanto, criarei uma função que terá como argumento um data frame que chamarei de <code>x</code> (pode ser qualquer nome). Vou chamar essa função de <code>mesclar_dados</code> (pode ser qualquer nome) e desejo que ela faça o seguinte:</p>
+<ul>
+<li>Join nos conjuntos de dados (<code>dplyr::left_join()</code>);</li>
+<li>Após o join, remova a coluna <code>codigo</code>, já que não precisamos mais dela (<code>dplyr::select()</code>);</li>
+<li>Renomeie as colunas <code>muni_id</code>, <code>uf_sigla</code> e <code>regiao_nm</code> (<code>dplyr::rename()</code>);</li>
+<li>Reposicione as colunas renomeadas para antes da coluna <code>municipio</code> (<code>dplyr::relocate()</code>).</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mesclar_dados</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">x</span> <span class="o">%&gt;%</span>
+    <span class="nf">left_join</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;codigo&#34;</span> <span class="o">=</span> <span class="s">&#34;muni_id_6&#34;</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">codigo</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">rename</span><span class="p">(</span><span class="n">cod_ibge</span> <span class="o">=</span> <span class="n">muni_id</span><span class="p">,</span> <span class="n">uf</span> <span class="o">=</span> <span class="n">uf_sigla</span><span class="p">,</span> <span class="n">regiao</span> <span class="o">=</span> <span class="n">regiao_nm</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">relocate</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">cod_ibge</span><span class="p">,</span> <span class="n">regiao</span><span class="p">,</span> <span class="n">uf</span><span class="p">),</span> <span class="n">.before</span> <span class="o">=</span> <span class="n">municipio</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>Criada a função, agora podemos simplesmente passar nossa lista <code>morte_infantil</code> e a função <code>mesclar_dados</code> como argumentos para o <code>map()</code> e ver a mágica acontecer:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">morte_infantil_mesclado</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span>
+
+<span class="n">morte_infantil_mesclado</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## $`2010`
+## # A tibble: 2,386 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     5  2010
+##  2 1100023  Norte  RO    Ariquemes                29  2010
+##  3 1100049  Norte  RO    Cacoal                   14  2010
+##  4 1100064  Norte  RO    Colorado do Oeste         2  2010
+##  5 1100072  Norte  RO    Corumbiara                1  2010
+##  6 1100080  Norte  RO    Costa Marques             1  2010
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           3  2010
+##  8 1100106  Norte  RO    Guajará-Mirim            13  2010
+##  9 1100114  Norte  RO    Jaru                      8  2010
+## 10 1100122  Norte  RO    Ji-Paraná                31  2010
+## # ... with 2,376 more rows
+## 
+## $`2011`
+## # A tibble: 2,384 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     3  2011
+##  2 1100023  Norte  RO    Ariquemes                15  2011
+##  3 1100049  Norte  RO    Cacoal                   14  2011
+##  4 1100056  Norte  RO    Cerejeiras                2  2011
+##  5 1100072  Norte  RO    Corumbiara                1  2011
+##  6 1100080  Norte  RO    Costa Marques             1  2011
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           6  2011
+##  8 1100106  Norte  RO    Guajará-Mirim             5  2011
+##  9 1100114  Norte  RO    Jaru                      2  2011
+## 10 1100122  Norte  RO    Ji-Paraná                10  2011
+## # ... with 2,374 more rows
+## 
+## $`2012`
+## # A tibble: 2,313 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     1  2012
+##  2 1100023  Norte  RO    Ariquemes                14  2012
+##  3 1100049  Norte  RO    Cacoal                   12  2012
+##  4 1100056  Norte  RO    Cerejeiras                3  2012
+##  5 1100064  Norte  RO    Colorado do Oeste         2  2012
+##  6 1100080  Norte  RO    Costa Marques             2  2012
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           1  2012
+##  8 1100106  Norte  RO    Guajará-Mirim             3  2012
+##  9 1100114  Norte  RO    Jaru                      6  2012
+## 10 1100122  Norte  RO    Ji-Paraná                10  2012
+## # ... with 2,303 more rows
+</code></pre></div><p>Pronto! Simples assim! O <code>map()</code> aplicou nossa função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames mesclados.</p>
+<p>Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do <code>{purrr}</code>: a <code>walk()</code>. <code>walk()</code> funciona de forma semelhante ao <code>map()</code>, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a <code>write.csv2()</code>. No argumento <code>file</code> passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte <code>./dados-mesclados/</code>).</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># utilizando o pipe</span>
+
+<span class="n">morte_infantil_mesclado</span> <span class="o">%&gt;%</span>
+  <span class="nf">names</span><span class="p">(</span><span class="n">.)</span> <span class="o">%&gt;%</span>
+  <span class="nf">walk</span><span class="p">(</span> <span class="o">~</span> <span class="nf">write.csv2</span><span class="p">(</span>
+    <span class="n">morte_infantil_mesclado[[.]]</span><span class="p">,</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nf">glue</span><span class="p">(</span><span class="s">&#34;./dados-mesclados/{.}-mesclado.csv&#34;</span><span class="p">),</span>
+    <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span>
+  <span class="p">))</span>
+
+<span class="c1"># sem o pipe</span>
+
+<span class="nf">walk</span><span class="p">(</span>
+  <span class="nf">names</span><span class="p">(</span><span class="n">morte_infantil_mesclado</span><span class="p">),</span>
+  <span class="o">~</span> <span class="nf">write.csv2</span><span class="p">(</span>
+    <span class="n">morte_infantil_mesclado[[.]]</span><span class="p">,</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nf">glue</span><span class="p">(</span><span class="s">&#34;./dados-mesclados/{.}-mesclado.csv&#34;</span><span class="p">),</span>
+    <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div><p>Se desejar &ldquo;empilhar&rdquo; todos os anos e exportar tudo em um único arquivo csv, use:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">map_df</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">write.csv2</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="s">&#34;./dados-mesclados/mortes_infantis_mesclado.csv&#34;</span><span class="p">,</span>
+             <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+</code></pre></div><p>Bom, por hoje só. O código completo dessa postagem está disponível no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin">GitHub</a>. Na segunda parte darei continuidade falando sobre o <code>inner_join()</code>, que nos permite mesclar dois ou mais conjuntos de dados mantendo somente as linhas que é comum entre todos eles. Até a próxima 😄.</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/joins/">joins</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/dplyr/">dplyr</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/left-join/">left join</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/r/">R</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;text=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;description=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:santhiago_cristiano@hotmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/santhiago-cristiano" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/username" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Santhiago Cristiano
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2021
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://santhiago-cristiano.github.io/site/">Santhiago Cristiano</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.85.0</a> &nbsp;&bull;&nbsp; Tema <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adaptado de <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://santhiago-cristiano.github.io/site/js/main.js"></script>
+<script src="https://santhiago-cristiano.github.io/site/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://santhiago-cristiano.github.io/site/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

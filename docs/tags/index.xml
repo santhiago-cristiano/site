@@ -6,14 +6,41 @@
     <description>Recent content in Tags on Santhiago Cristiano</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <managingEditor>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</managingEditor>
-    <webMaster>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</webMaster>
-    <lastBuildDate>Mon, 12 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <managingEditor>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</managingEditor>
+    <webMaster>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</webMaster>
+    <lastBuildDate>Fri, 16 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>dplyr</title>
+      <link>https://santhiago-cristiano.github.io/site/tags/dplyr/</link>
+      <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
+      <guid>https://santhiago-cristiano.github.io/site/tags/dplyr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>joins</title>
+      <link>https://santhiago-cristiano.github.io/site/tags/joins/</link>
+      <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
+      <guid>https://santhiago-cristiano.github.io/site/tags/joins/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>left join</title>
+      <link>https://santhiago-cristiano.github.io/site/tags/left-join/</link>
+      <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
+      <guid>https://santhiago-cristiano.github.io/site/tags/left-join/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>R</title>
       <link>https://santhiago-cristiano.github.io/site/tags/r/</link>
-      <pubDate>Mon, 12 Jul 2021 00:00:00 +0000</pubDate>
-      <author>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</author>
+      <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
       <guid>https://santhiago-cristiano.github.io/site/tags/r/</guid>
       <description></description>
     </item>

@@ -1,0 +1,272 @@
+---
+title: "Como mesclar conjuntos de dados no R. Parte I: left_join()"
+author: Santhiago Cristiano
+date: '2021-07-16'
+slug: []
+categories:
+  - R
+tags:
+  - joins
+  - dplyr
+  - left join
+  - R
+type: ''
+subtitle: ''
+image: ''
+---
+
+Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função `left_join()` do pacote `{dplyr}`.
+
+# Base de dados
+
+Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos [aqui](https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10). Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin/dados).  
+
+# Pacotes
+
+Inicialmente, vamos carregar os pacotes que serão utilizados:
+
+```{r, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(abjData)
+library(purrr)
+library(glue)
+```
+
+Se ainda não possui esses pacotes instalados, você pode instalar todos de uma só vez rodando o comando abaixo:
+
+```{r, eval=FALSE}
+install.packages(c("readr", "dplyr", "abjData", "purrr", "glue"))
+```
+
+# Importando os dados para o R
+
+Para importar nossos dados para o R, primeiramente utilizaremos a função `list.files()`, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório.
+
+```{r}
+# lista todos os arquivos csv na pasta
+
+arquivos_csv <- list.files(
+  path = "./dados/",
+  pattern = "*.csv",
+  full.names = TRUE
+)
+
+arquivos_csv
+```
+
+Em seguida, podemos ler todos esses arquivos de uma tacada só utilizando a função `read_csv2()` em conjunto com a `map()` dos pacotes `{readr}` e `{purrr}`, respectivamente. `read_csv2()` nos permite ler arquivos csv separados por `;` e o `map()` vai simplesmente aplicar essa função em cada um dos três elementos do vetor `arquivos_csv` e nos retornar uma lista de data frames.  
+
+```{r, message=FALSE, warning=FALSE}
+# lendo todos os arquivos e armazenando numa lista
+
+morte_infantil <- map(
+  arquivos_csv,
+  read_csv2,
+  locale(encoding = "latin1"),
+  col_names = TRUE,
+  col_types = "ccdi"
+)
+
+# atribuindo o ano como "nome" para cada um dos data frames da lista
+
+names(morte_infantil) <- 2010:2012
+```
+
+Como argumentos para `read_csv2()` passamos o encoding dos nossos arquivos csv dentro da função `locale()`, que neste caso é `latin1`. O `latin1` é apenas um dos diversos encodings existentes, para saber mais, [clique aqui](https://en.wikipedia.org/wiki/Character_encoding). Além do encoding, passamos `col_names = TRUE`, para que a primeira linha dos nossos arquivos sejam reconhecidas como os nomes das colunas. Podemos ainda definir explicitamente o tipo de cada coluna com `col_types`. Nos dados temos 4 colunas, então, a primeira e a segunda coluna serão do tipo `c = character`, a terceira do tipo `d = double` e a última do tipo `i = integer`.
+
+```{r}
+# visualizando a lista
+
+morte_infantil
+```
+
+
+Como pode ser visto, além do total de mortes infantis e do ano, os dados do DATASUS contém apenas os nomes dos municípios e os códigos de 6 dígitos referentes a cada um deles. Seria interessante também adicionarmos as regiões e os estados e substituirmos o código de 6 dígitos pelo código de 7 dígitos do IBGE. Para isso, importaremos a base de dados `muni`, do pacote `{abjData}`, que contém as colunas que desejamos acrescentar.
+
+```{r}
+glimpse(abjData::muni)
+```
+
+Essa base de dados completa possui muitas colunas, mas não precisamos de todas elas. Para selecionar somente as colunas que desejamos, podemos utilizar a função `select()` do `{dplyr}`. Aqui também utilizo o [operador pipe (%>%)](https://www.datacamp.com/community/tutorials/pipe-r-tutorial) do `{magrittr}`.
+
+```{r}
+# carregando os dados auxiliares
+
+auxiliar <- abjData::muni %>%
+  select(muni_id, muni_id_6, uf_sigla, regiao_nm) %>%
+  arrange(muni_id_6)
+```
+
+Dentro do `select()`, passamos como argumento os nomes das colunas que queremos selecionar:
+
+- `muni_id`: código de 7 dígitos;
+- `muni_id_6`: código de 6 dígitos que servirá como chave para fazermos o join com nossa base de dados do DATASUS;
+- `uf_sigla`e `regiao_nm`: siglas dos estados e nomes das regiões, respectivamente.
+
+O `arrange()` está apenas ordenando os dados em ordem crescente de acordo com o código de 6 dígitos.
+
+# dplyr::left_join()
+
+A função `left_join()` possui três argumentos principais:
+
+`left_join(x, y, by)`
+
+`x` e `y`correpondem aos dois conjuntos de dados que desejamos mesclar, para o `by`, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente `by = "nome da coluna"`, já quando os nomes das colunas são diferentes, usamos `by = c("nome da coluna em x" = "nome da coluna em y")`. O `left_join()` irá retornar todas as linhas de `x` e todas as colunas de `x` e `y`. As linhas em `x` que não possuem uma correspondente em `y` são preenchidas automaticamente com `NA`.
+
+## Exemplo 1
+
+Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos duas tabelas, que chamarei de `tbl_1` e `tbl_2`:
+
+```{r}
+tbl_1 <- tibble::tribble(
+  ~cpf, ~nome, ~idade,
+  11111111111, "Maria", 25,
+  22222222222, "José" , 40,
+  33333333333, "Fran" , 23,
+  44444444444, "Jõao" , 30,
+)
+tbl_1
+
+tbl_2 <- tibble::tribble(
+  ~cpf, ~cidade, ~estado,
+  11111111111, "São Paulo"     , "SP",
+  22222222222, "Mossoró"       , "RN",
+  33333333333, "Natal"         , "RN",
+  44444444444, "Rio de Janeiro", "RJ",
+)
+tbl_2
+```
+
+Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R & Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em uma única tabela, acrescentando as colunas de cidade e estado da `tbl_2` na `tbl_1`. Como fariamos isso usando o `left_join()`?
+
+Note que a coluna `cpf` é comum em ambas as tabelas, portanto, podemos usá-la como chave passando-a para o argumento `by`, dessa forma:
+
+```{r}
+left_join(x = tbl_1, y = tbl_2, by = "cpf")
+```
+
+Alternativamente, o mesmo resultado pode ser obtido utilizando o pipe `%>%`:
+
+```{r}
+tbl_1 %>% 
+  left_join(tbl_2, by = "cpf")
+```
+
+Nesse exemplo, cada linha da coluna `cpf` da `tbl_1` possui uma linha idêntica na coluna `cpf` da `tbl_2`, por esse motivo, não foi retornado nenhum valor `NA`. 
+
+## Exemplo 2
+
+Neste outro exemplo, farei algumas mudanças nas nossas tabelas:
+
+```{r}
+tbl_1 <- tibble::tribble(
+  ~cpf, ~nome, ~idade,
+  11111111111, "Maria", 25,
+  22222222222, "José" , 40,
+  33333333333, "Fran" , 23,
+  44444444444, "Jõao" , 30,
+  55555555555, "Messi", 34
+)
+tbl_1
+
+tbl_2 <- tibble::tribble(
+  ~cpf_cliente, ~cidade, ~estado,
+  11111111111    , "São Paulo"     , "SP",
+  22222222222    , "Mossoró"       , "RN",
+  33333333333    , "Natal"         , "RN",
+  44444444444    , "Rio de Janeiro", "RJ"
+)
+tbl_2
+```
+
+Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica na segunda tabela. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, nosso join ficaria assim:
+
+```{r}
+left_join(x = tbl_1, y = tbl_2, by = c("cpf" = "cpf_cliente"))
+```
+
+# Mesclando os conjuntos de dados
+
+Agora que importamos todos os dados que precisamos e sabemos como funciona o `left_join()`, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos `by = c("codigo" = "muni_id_6")`.
+
+Uma das maneiras de fazer join em nossos dados é assim:
+
+```{r, eval=FALSE}
+# 2010
+morte_infantil[["2010"]] <- morte_infantil[["2010"]] %>% 
+  left_join(auxiliar, by = c("codigo" = "muni_id_6"))
+
+# 2011
+morte_infantil[["2011"]] <- morte_infantil[["2011"]] %>% 
+  left_join(auxiliar, by = c("codigo" = "muni_id_6"))
+
+# 2012
+morte_infantil[["2012"]] <- morte_infantil[["2012"]] %>% 
+  left_join(auxiliar, by = c("codigo" = "muni_id_6"))
+
+```
+
+No entanto, há uma outra forma de se fazer (que considero bem melhor) usando o `map()` do `{purrr}`. Para tanto, criarei uma função que terá como argumento um data frame que chamarei de `x` (pode ser qualquer nome). Vou chamar essa função de `mesclar_dados` (pode ser qualquer nome) e desejo que ela faça o seguinte:
+
+- Join nos conjuntos de dados (`dplyr::left_join()`); 
+- Após o join, remova a coluna `codigo`, já que não precisamos mais dela (`dplyr::select()`); 
+- Renomeie as colunas `muni_id`, `uf_sigla` e `regiao_nm` (`dplyr::rename()`);
+- Reposicione as colunas renomeadas para antes da coluna `municipio` (`dplyr::relocate()`).
+
+```{r}
+mesclar_dados <- function(x) {
+  x %>%
+    left_join(auxiliar, by = c("codigo" = "muni_id_6")) %>%
+    select(-codigo) %>%
+    rename(cod_ibge = muni_id, uf = uf_sigla, regiao = regiao_nm) %>%
+    relocate(c(cod_ibge, regiao, uf), .before = municipio)
+}
+```
+
+Criada a função, agora podemos simplesmente passar nossa lista `morte_infantil` e a função `mesclar_dados` como argumentos para o `map()` e ver a mágica acontecer:
+
+```{r}
+morte_infantil_mesclado <- map(morte_infantil, mesclar_dados)
+
+morte_infantil_mesclado
+```
+
+Pronto! Simples assim! O `map()` aplicou nossa função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames mesclados. 
+
+Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do `{purrr}`: a `walk()`. `walk()` funciona de forma semelhante ao `map()`, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a `write.csv2()`. No argumento `file` passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte `./dados-mesclados/`).
+ 
+```{r, eval=FALSE}
+# utilizando o pipe
+
+morte_infantil_mesclado %>%
+  names(.) %>%
+  walk( ~ write.csv2(
+    morte_infantil_mesclado[[.]],
+    file = glue("./dados-mesclados/{.}-mesclado.csv"),
+    row.names = FALSE
+  ))
+
+# sem o pipe
+
+walk(
+  names(morte_infantil_mesclado),
+  ~ write.csv2(
+    morte_infantil_mesclado[[.]],
+    file = glue("./dados-mesclados/{.}-mesclado.csv"),
+    row.names = FALSE
+  )
+)
+```
+
+Se desejar "empilhar" todos os anos e exportar tudo em um único arquivo csv, use:
+
+```{r, eval=FALSE}
+map_df(morte_infantil, mesclar_dados) %>%
+  write.csv2(file = "./dados-mesclados/mortes_infantis_mesclado.csv",
+             row.names = FALSE)
+```
+
+Bom, por hoje só. O código completo dessa postagem está disponível no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin). Na segunda parte darei continuidade falando sobre o `inner_join()`, que nos permite mesclar dois ou mais conjuntos de dados mantendo somente as linhas que é comum entre todos eles. Até a próxima 😄.
+
+

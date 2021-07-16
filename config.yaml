@@ -2,7 +2,6 @@ baseurl: https://santhiago-cristiano.github.io/site/
 languageCode: en
 DefaultContentLanguage: br
 title: Santhiago Cristiano
-description: Teste Descrição
 theme: beautifulhugo
 metaDataFormat: yaml
 summarylength: 20
@@ -24,20 +23,20 @@ Params:
     - post
     - posts
     #- projetos
-  readingTime: yes
+  readingTime: no
   rss: no
   showRelatedPosts: yes
   socialShare: yes
   #homeTitle: Título
-  subtitle: Este é meu site pessoal. Aqui escrevo sobre R e Python.
+  subtitle: Seja bem vindo (a) ao meu site pessoal. Aqui compartilho meu aprendizado sobre R e Python.
   useHLJS: yes
-  wordCount: yes
+  wordCount: no
 Author:
   #500px: username
   #bandcamp: username
   #bitbucket: username
   #codepen: username
-  email: santhiagocristiano.og@gmail.com
+  email: santhiago_cristiano@hotmail.com
   #facebook: username
   github: santhiago-cristiano
   #gitlab: username
@@ -72,6 +71,9 @@ menu:
     - name: Sobre
       url: page/about/
       weight: 3
+    - name: Contato
+      url: page/contact/
+      weight: 4
     #- identifier: samples
     #  name: Samples
     #  weight: 2
@@ -89,7 +91,7 @@ menu:
     #  weight: 3
     - name: Tags
       url: tags
-      weight: 3
+      weight: 5
 
 markup:
   goldmark:

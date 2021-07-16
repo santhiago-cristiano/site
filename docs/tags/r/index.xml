@@ -6,16 +6,16 @@
     <description>Recent content in R on Santhiago Cristiano</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <managingEditor>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</managingEditor>
-    <webMaster>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</webMaster>
-    <lastBuildDate>Mon, 12 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <managingEditor>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</managingEditor>
+    <webMaster>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</webMaster>
+    <lastBuildDate>Fri, 16 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/tags/r/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Teste</title>
-      <link>https://santhiago-cristiano.github.io/site/post/2021-07-12-teste/</link>
-      <pubDate>Mon, 12 Jul 2021 00:00:00 +0000</pubDate>
-      <author>santhiagocristiano.og@gmail.com (Santhiago Cristiano)</author>
-      <guid>https://santhiago-cristiano.github.io/site/post/2021-07-12-teste/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet ex eu lectus sodales tincidunt non eu magna. Proin dapibus libero sit amet erat semper, id consequat metus condimentum.</description>
+      <title>Como mesclar conjuntos de dados no R. Parte I: left_join()</title>
+      <link>https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/</link>
+      <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
+      <guid>https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/</guid>
+      <description>Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.</description>
     </item>
     
   </channel>
