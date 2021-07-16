@@ -17,6 +17,8 @@ image: ''
 
 Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função `left_join()` do pacote `{dplyr}`.
 
+*Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.* 😉
+
 # Base de dados
 
 Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos [aqui](https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10). Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin/dados).  
@@ -199,7 +201,7 @@ A função `left_join()` possui três argumentos principais:
 
 ## Exemplo 1
 
-Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos duas tabelas, que chamarei de `tbl_1` e `tbl_2`:
+Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos dois data frames ([tibbles](https://tibble.tidyverse.org/)), que chamarei de `tbl_1` e `tbl_2`:
 
 
 ```r
@@ -244,7 +246,7 @@ tbl_2
 ## 4 44444444444 Rio de Janeiro RJ
 ```
 
-Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R & Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em uma única tabela, acrescentando as colunas de cidade e estado da `tbl_2` na `tbl_1`. Como fariamos isso usando o `left_join()`?
+Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R & Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em um único data frame, acrescentando as colunas de cidade e estado da `tbl_2` na `tbl_1`. Como faríamos isso usando o `left_join()`?
 
 Note que a coluna `cpf` é comum em ambas as tabelas, portanto, podemos usá-la como chave passando-a para o argumento `by`, dessa forma:
 
@@ -285,7 +287,7 @@ Nesse exemplo, cada linha da coluna `cpf` da `tbl_1` possui uma linha idêntica 
 
 ## Exemplo 2
 
-Neste outro exemplo, farei algumas mudanças nas nossas tabelas:
+Neste outro exemplo, farei algumas mudanças nos nossos data frames:
 
 
 ```r
@@ -332,7 +334,7 @@ tbl_2
 ## 4 44444444444 Rio de Janeiro RJ
 ```
 
-Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica na segunda tabela. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, nosso join ficaria assim:
+Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, nosso join ficaria assim:
 
 
 ```r
@@ -450,7 +452,7 @@ morte_infantil_mesclado
 
 Pronto! Simples assim! O `map()` aplicou nossa função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames mesclados. 
 
-Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do `{purrr}`: a `walk()`. `walk()` funciona de forma semelhante ao `map()`, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a `write.csv2()`. No argumento `file` passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte `./dados-mesclados/`).
+Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do `{purrr}`: a `walk()`. `walk()` funciona de forma semelhante ao `map()`, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a `write.csv2()`: 
  
 
 ```r
@@ -458,7 +460,7 @@ Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, pod
 
 morte_infantil_mesclado %>%
   names(.) %>%
-  walk( ~ write.csv2(
+  walk(~ write.csv2(
     morte_infantil_mesclado[[.]],
     file = glue("./dados-mesclados/{.}-mesclado.csv"),
     row.names = FALSE
@@ -476,6 +478,8 @@ walk(
 )
 ```
 
+No argumento `file` passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte `./dados-mesclados/`).
+
 Se desejar "empilhar" todos os anos e exportar tudo em um único arquivo csv, use:
 
 
@@ -485,6 +489,24 @@ map_df(morte_infantil, mesclar_dados) %>%
              row.names = FALSE)
 ```
 
-Bom, por hoje só. O código completo dessa postagem está disponível no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin). Na segunda parte darei continuidade falando sobre o `inner_join()`, que nos permite mesclar dois ou mais conjuntos de dados mantendo somente as linhas que é comum entre todos eles. Até a próxima 😄.
+Bom, por hoje só. O código completo dessa postagem está disponível no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin). Na segunda parte darei continuidade falando sobre o `inner_join()`, que nos permite mesclar dois ou mais conjuntos de dados a partir de uma ou mais colunas chave mantendo somente as linhas que é comum entre todos eles.
 
+Até a próxima 😄.
 
+# Referências
+
+- https://readr.tidyverse.org/
+
+- https://dplyr.tidyverse.org/
+
+- https://dplyr.tidyverse.org/reference/join.html
+
+- https://github.com/abjur/abjData
+
+- https://purrr.tidyverse.org/
+
+- https://glue.tidyverse.org/reference/glue.html
+
+- https://tibble.tidyverse.org/
+
+- https://magrittr.tidyverse.org/
