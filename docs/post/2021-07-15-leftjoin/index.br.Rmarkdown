@@ -17,15 +17,17 @@ image: ''
 
 Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função `left_join()` do pacote `{dplyr}`.
 
-*Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.* 😉
+*Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.* 😉 
 
 # Base de dados
 
-Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos [aqui](https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10). Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin/dados).  
+Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos [aqui](https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10). Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados).  
 
-# Pacotes
+# Pacotes e criação do projeto
 
-Inicialmente, vamos carregar os pacotes que serão utilizados:
+Inicialmente, recomendo a criação de um projeto. Se você não sabe o que é, como funciona, como criar ou por qual motivo você deveria passar a utilizar projetos no R, recomendo a leitura [deste capítulo do livro Zen do R](https://curso-r.github.io/zen-do-r/rproj-dir.html) escrito pelo pessoal da [Curso-R](https://curso-r.com/).
+
+Dito isso, vamos carregar os pacotes que serão utilizados:
 
 ```{r, message=FALSE, warning=FALSE}
 library(readr)
@@ -43,10 +45,10 @@ install.packages(c("readr", "dplyr", "abjData", "purrr", "glue"))
 
 # Importando os dados para o R
 
-Para importar nossos dados para o R, primeiramente utilizaremos a função `list.files()`, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório.
+Para importar nossos dados para o R, primeiramente utilizamos a função `list.files()`, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.
 
 ```{r}
-# lista todos os arquivos csv na pasta
+# lista todos os arquivos csv contidos na minha pasta "dados/" 
 
 arquivos_csv <- list.files(
   path = "./dados/",
@@ -60,7 +62,7 @@ arquivos_csv
 Em seguida, podemos ler todos esses arquivos de uma tacada só utilizando a função `read_csv2()` em conjunto com a `map()` dos pacotes `{readr}` e `{purrr}`, respectivamente. `read_csv2()` nos permite ler arquivos csv separados por `;` e o `map()` vai simplesmente aplicar essa função em cada um dos três elementos do vetor `arquivos_csv` e nos retornar uma lista de data frames.  
 
 ```{r, message=FALSE, warning=FALSE}
-# lendo todos os arquivos e armazenando numa lista
+# lendo todos os arquivos e armazenando em uma lista
 
 morte_infantil <- map(
   arquivos_csv,
@@ -110,15 +112,17 @@ O `arrange()` está apenas ordenando os dados em ordem crescente de acordo com o
 
 # dplyr::left_join()
 
-A função `left_join()` possui três argumentos principais:
+A função `left_join()` possui os seguintes argumentos:
 
-`left_join(x, y, by)`
+`left_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)`
 
-`x` e `y`correpondem aos dois conjuntos de dados que desejamos mesclar, para o `by`, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente `by = "nome da coluna"`, já quando os nomes das colunas são diferentes, usamos `by = c("nome da coluna em x" = "nome da coluna em y")`. O `left_join()` irá retornar todas as linhas de `x` e todas as colunas de `x` e `y`. As linhas em `x` que não possuem uma correspondente em `y` são preenchidas automaticamente com `NA`.
+Para o caso em questão, precisamos somente dos três primeiros. `x` e `y`correpondem aos dois conjuntos de dados que desejamos mesclar. Para o `by`, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente `by = "nome da coluna"`, já quando os nomes das colunas são diferentes, usamos `by = c("nome da coluna em x" = "nome da coluna em y")`.
+
+O `left_join()` irá retornar todas as linhas de `x` e todas as colunas de `x` e `y`. As linhas em `x` que não possuem uma correspondente em `y` são preenchidas automaticamente com `NA`. Talvez tudo isso tenha ficado um pouco confuso, mas com exemplos pode ficar mais claro.
 
 ## Exemplo 1
 
-Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos dois data frames ([tibbles](https://tibble.tidyverse.org/)), que chamarei de `tbl_1` e `tbl_2`:
+Admita que tenhamos dois data frames ([tibbles](https://tibble.tidyverse.org/)), que chamarei de `tbl_1` e `tbl_2`:
 
 ```{r}
 tbl_1 <- tibble::tribble(
@@ -140,7 +144,7 @@ tbl_2 <- tibble::tribble(
 tbl_2
 ```
 
-Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R & Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em um único data frame, acrescentando as colunas de cidade e estado da `tbl_2` na `tbl_1`. Como faríamos isso usando o `left_join()`?
+Vamos supor que o primeiro contém o CPF, nome e idade de clientes da empresa R & Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em um único data frame, acrescentando as colunas de cidade e estado da `tbl_2` na `tbl_1`. Como faríamos isso usando o `left_join()`?
 
 Note que a coluna `cpf` é comum em ambas as tabelas, portanto, podemos usá-la como chave passando-a para o argumento `by`, dessa forma:
 
@@ -159,7 +163,7 @@ Nesse exemplo, cada linha da coluna `cpf` da `tbl_1` possui uma linha idêntica 
 
 ## Exemplo 2
 
-Neste outro exemplo, farei algumas mudanças nos nossos data frames:
+Neste outro exemplo, farei algumas mudanças nos dados:
 
 ```{r}
 tbl_1 <- tibble::tribble(
@@ -174,15 +178,15 @@ tbl_1
 
 tbl_2 <- tibble::tribble(
   ~cpf_cliente, ~cidade, ~estado,
-  11111111111    , "São Paulo"     , "SP",
-  22222222222    , "Mossoró"       , "RN",
-  33333333333    , "Natal"         , "RN",
-  44444444444    , "Rio de Janeiro", "RJ"
+  11111111111, "São Paulo"     , "SP",
+  22222222222, "Mossoró"       , "RN",
+  33333333333, "Natal"         , "RN",
+  44444444444, "Rio de Janeiro", "RJ"
 )
 tbl_2
 ```
 
-Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, nosso join ficaria assim:
+Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais e que esta não possui uma correspondente no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, o join ficaria assim:
 
 ```{r}
 left_join(x = tbl_1, y = tbl_2, by = c("cpf" = "cpf_cliente"))
@@ -192,7 +196,7 @@ left_join(x = tbl_1, y = tbl_2, by = c("cpf" = "cpf_cliente"))
 
 Agora que importamos todos os dados que precisamos e sabemos como funciona o `left_join()`, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos `by = c("codigo" = "muni_id_6")`.
 
-Uma das maneiras de fazer join em nossos dados é assim:
+Uma das maneiras de fazer o left_join em nossos dados é assim:
 
 ```{r, eval=FALSE}
 # 2010
@@ -226,7 +230,7 @@ mesclar_dados <- function(x) {
 }
 ```
 
-Criada a função, agora podemos simplesmente passar nossa lista `morte_infantil` e a função `mesclar_dados` como argumentos para o `map()` e ver a mágica acontecer:
+Criada a função, agora podemos simplesmente passar a lista `morte_infantil` e a função `mesclar_dados` como argumentos para o `map()` e ver a mágica acontecer:
 
 ```{r}
 morte_infantil_mesclado <- map(morte_infantil, mesclar_dados)
@@ -234,12 +238,12 @@ morte_infantil_mesclado <- map(morte_infantil, mesclar_dados)
 morte_infantil_mesclado
 ```
 
-Pronto! Simples assim! O `map()` aplicou nossa função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames mesclados. 
+Pronto! Simples assim! O `map()` aplicou a função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames já mesclados. Agora temos as colunas `cod_ibge`, `regiao` e `uf` em todos os anos.
 
-Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do `{purrr}`: a `walk()`. `walk()` funciona de forma semelhante ao `map()`, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a `write.csv2()`: 
+Por fim, se quisermos exportar os dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do `{purrr}`: a `walk()`. `walk()` funciona de forma semelhante ao `map()`, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a `write.csv2()`: 
  
 ```{r, eval=FALSE}
-# utilizando o pipe
+# com o pipe
 
 morte_infantil_mesclado %>%
   names(.) %>%
@@ -261,17 +265,17 @@ walk(
 )
 ```
 
-No argumento `file` passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte `./dados-mesclados/`).
+**O caminho que passei no argumento `file` é relativo ao meu projeto e pode ser diferente no seu caso**. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador. 
 
 Se desejar "empilhar" todos os anos e exportar tudo em um único arquivo csv, use:
 
 ```{r, eval=FALSE}
-map_df(morte_infantil, mesclar_dados) %>%
+map_dfr(morte_infantil, mesclar_dados) %>%
   write.csv2(file = "./dados-mesclados/mortes_infantis_mesclado.csv",
              row.names = FALSE)
 ```
 
-Bom, por hoje só. O código completo dessa postagem está disponível no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin). Na segunda parte darei continuidade falando sobre o `inner_join()`, que nos permite mesclar dois ou mais conjuntos de dados a partir de uma ou mais colunas chave mantendo somente as linhas que é comum entre todos eles.
+Bom, por hoje só. O código completo dessa postagem está disponível no meu [GitHub](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin). Na segunda parte darei continuidade falando sobre o `inner_join()`, que nos permite mesclar dois ou mais conjuntos de dados a partir de uma ou mais colunas chave mantendo somente as linhas que é comum entre todos eles.
 
 Até a próxima 😄.
 

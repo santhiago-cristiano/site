@@ -22,4 +22,4 @@ nele desde então. Programo principalmente em R, mas estou sempre buscando apren
 
 # Sobre o site
 
-Este site foi criado usando [Hugo](https://gohugo.io/), o tema [Beautiful Hugo](https://github.com/halogenica/beautifulhugo) adaptado de [Beautiful Jekyll](https://beautifuljekyll.com/), o pacote [Blogdown](https://github.com/rstudio/blogdown) e o [RStudio](https://www.rstudio.com/). O site está hospedado no [GitHub Pages](https://pages.github.com/).
+Este site foi criado usando [Hugo](https://gohugo.io/), o tema [Beautiful Hugo](https://github.com/halogenica/beautifulhugo) adaptado de [Beautiful Jekyll](https://beautifuljekyll.com/), o pacote [Blogdown](https://github.com/rstudio/blogdown) e o [RStudio](https://www.rstudio.com/).

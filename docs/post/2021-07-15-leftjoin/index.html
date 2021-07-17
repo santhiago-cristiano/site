@@ -59,7 +59,7 @@
   "headline": "Como mesclar conjuntos de dados no R. Parte I: left_join()",
   "description" : "Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.",
   "inLanguage" : "br",
-  "wordCount":  2698 ,
+  "wordCount":  2798 ,
   "datePublished" : "2021-07-16T00:00:00",
   "dateModified" : "2021-07-16T00:00:00",
   "image" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
@@ -270,9 +270,10 @@
         <p>Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função <code>left_join()</code> do pacote <code>{dplyr}</code>.</p>
 <p><em>Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.</em> 😉</p>
 <h1 id="base-de-dados">Base de dados</h1>
-<p>Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos <a href="https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10">aqui</a>. Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin/dados">GitHub</a>.</p>
-<h1 id="pacotes">Pacotes</h1>
-<p>Inicialmente, vamos carregar os pacotes que serão utilizados:</p>
+<p>Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos <a href="https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10">aqui</a>. Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados">GitHub</a>.</p>
+<h1 id="pacotes-e-criação-do-projeto">Pacotes e criação do projeto</h1>
+<p>Inicialmente, recomendo a criação de um projeto. Se você não sabe o que é, como funciona, como criar ou por qual motivo você deveria passar a utilizar projetos no R, recomendo a leitura <a href="https://curso-r.github.io/zen-do-r/rproj-dir.html">deste capítulo do livro Zen do R</a> escrito pelo pessoal da <a href="https://curso-r.com/">Curso-R</a>.</p>
+<p>Dito isso, vamos carregar os pacotes que serão utilizados:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">abjData</span><span class="p">)</span>
@@ -281,8 +282,8 @@
 </code></pre></div><p>Se ainda não possui esses pacotes instalados, você pode instalar todos de uma só vez rodando o comando abaixo:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;readr&#34;</span><span class="p">,</span> <span class="s">&#34;dplyr&#34;</span><span class="p">,</span> <span class="s">&#34;abjData&#34;</span><span class="p">,</span> <span class="s">&#34;purrr&#34;</span><span class="p">,</span> <span class="s">&#34;glue&#34;</span><span class="p">))</span>
 </code></pre></div><h1 id="importando-os-dados-para-o-r">Importando os dados para o R</h1>
-<p>Para importar nossos dados para o R, primeiramente utilizaremos a função <code>list.files()</code>, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório.</p>
-<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lista todos os arquivos csv na pasta</span>
+<p>Para importar nossos dados para o R, primeiramente utilizamos a função <code>list.files()</code>, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lista todos os arquivos csv contidos na minha pasta &#34;dados/&#34; </span>
 
 <span class="n">arquivos_csv</span> <span class="o">&lt;-</span> <span class="nf">list.files</span><span class="p">(</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s">&#34;./dados/&#34;</span><span class="p">,</span>
@@ -294,7 +295,7 @@
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## [1] &#34;./dados/2010-mortes-infantis.csv&#34; &#34;./dados/2011-mortes-infantis.csv&#34;
 ## [3] &#34;./dados/2012-mortes-infantis.csv&#34;
 </code></pre></div><p>Em seguida, podemos ler todos esses arquivos de uma tacada só utilizando a função <code>read_csv2()</code> em conjunto com a <code>map()</code> dos pacotes <code>{readr}</code> e <code>{purrr}</code>, respectivamente. <code>read_csv2()</code> nos permite ler arquivos csv separados por <code>;</code> e o <code>map()</code> vai simplesmente aplicar essa função em cada um dos três elementos do vetor <code>arquivos_csv</code> e nos retornar uma lista de data frames.</p>
-<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lendo todos os arquivos e armazenando numa lista</span>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lendo todos os arquivos e armazenando em uma lista</span>
 
 <span class="n">morte_infantil</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">(</span>
   <span class="n">arquivos_csv</span><span class="p">,</span>
@@ -392,11 +393,12 @@
 </ul>
 <p>O <code>arrange()</code> está apenas ordenando os dados em ordem crescente de acordo com o código de 6 dígitos.</p>
 <h1 id="dplyrleft_join">dplyr::left_join()</h1>
-<p>A função <code>left_join()</code> possui três argumentos principais:</p>
-<p><code>left_join(x, y, by)</code></p>
-<p><code>x</code> e <code>y</code>correpondem aos dois conjuntos de dados que desejamos mesclar, para o <code>by</code>, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente <code>by = &quot;nome da coluna&quot;</code>, já quando os nomes das colunas são diferentes, usamos <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code>. O <code>left_join()</code> irá retornar todas as linhas de <code>x</code> e todas as colunas de <code>x</code> e <code>y</code>. As linhas em <code>x</code> que não possuem uma correspondente em <code>y</code> são preenchidas automaticamente com <code>NA</code>.</p>
+<p>A função <code>left_join()</code> possui os seguintes argumentos:</p>
+<p><code>left_join(x, y, by = NULL, copy = FALSE, suffix = c(&quot;.x&quot;, &quot;.y&quot;), ...)</code></p>
+<p>Para o caso em questão, precisamos somente dos três primeiros. <code>x</code> e <code>y</code>correpondem aos dois conjuntos de dados que desejamos mesclar. Para o <code>by</code>, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente <code>by = &quot;nome da coluna&quot;</code>, já quando os nomes das colunas são diferentes, usamos <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code>.</p>
+<p>O <code>left_join()</code> irá retornar todas as linhas de <code>x</code> e todas as colunas de <code>x</code> e <code>y</code>. As linhas em <code>x</code> que não possuem uma correspondente em <code>y</code> são preenchidas automaticamente com <code>NA</code>. Talvez tudo isso tenha ficado um pouco confuso, mas com exemplos pode ficar mais claro.</p>
 <h2 id="exemplo-1">Exemplo 1</h2>
-<p>Talvez tudo isso tenha ficado um pouco confuso, mas com um exemplo pode ficar mais claro. Admita que tenhamos dois data frames (<a href="https://tibble.tidyverse.org/">tibbles</a>), que chamarei de <code>tbl_1</code> e <code>tbl_2</code>:</p>
+<p>Admita que tenhamos dois data frames (<a href="https://tibble.tidyverse.org/">tibbles</a>), que chamarei de <code>tbl_1</code> e <code>tbl_2</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
   <span class="o">~</span><span class="n">cpf</span><span class="p">,</span> <span class="o">~</span><span class="n">nome</span><span class="p">,</span> <span class="o">~</span><span class="n">idade</span><span class="p">,</span>
   <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;Maria&#34;</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span>
@@ -427,7 +429,7 @@
 ## 2 22222222222 Mossoró        RN    
 ## 3 33333333333 Natal          RN    
 ## 4 44444444444 Rio de Janeiro RJ
-</code></pre></div><p>Imagine que o primeiro contém o CPF, nome e idade de clientes da empresa R &amp; Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em um único data frame, acrescentando as colunas de cidade e estado da <code>tbl_2</code> na <code>tbl_1</code>. Como faríamos isso usando o <code>left_join()</code>?</p>
+</code></pre></div><p>Vamos supor que o primeiro contém o CPF, nome e idade de clientes da empresa R &amp; Python SA (pouco criativo, eu admito), enquanto o segundo contém o CPF, a cidade e o estado onde cada um desses clientes moram. Agora suponha que desejamos reunir todas as informações dos clientes em um único data frame, acrescentando as colunas de cidade e estado da <code>tbl_2</code> na <code>tbl_1</code>. Como faríamos isso usando o <code>left_join()</code>?</p>
 <p>Note que a coluna <code>cpf</code> é comum em ambas as tabelas, portanto, podemos usá-la como chave passando-a para o argumento <code>by</code>, dessa forma:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">left_join</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">tbl_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cpf&#34;</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 5
@@ -449,7 +451,7 @@
 ## 4 44444444444 Jõao     30 Rio de Janeiro RJ
 </code></pre></div><p>Nesse exemplo, cada linha da coluna <code>cpf</code> da <code>tbl_1</code> possui uma linha idêntica na coluna <code>cpf</code> da <code>tbl_2</code>, por esse motivo, não foi retornado nenhum valor <code>NA</code>.</p>
 <h2 id="exemplo-2">Exemplo 2</h2>
-<p>Neste outro exemplo, farei algumas mudanças nos nossos data frames:</p>
+<p>Neste outro exemplo, farei algumas mudanças nos dados:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
   <span class="o">~</span><span class="n">cpf</span><span class="p">,</span> <span class="o">~</span><span class="n">nome</span><span class="p">,</span> <span class="o">~</span><span class="n">idade</span><span class="p">,</span>
   <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;Maria&#34;</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span>
@@ -469,10 +471,10 @@
 ## 5 55555555555 Messi    34
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
   <span class="o">~</span><span class="n">cpf_cliente</span><span class="p">,</span> <span class="o">~</span><span class="n">cidade</span><span class="p">,</span> <span class="o">~</span><span class="n">estado</span><span class="p">,</span>
-  <span class="m">11111111111</span>    <span class="p">,</span> <span class="s">&#34;São Paulo&#34;</span>     <span class="p">,</span> <span class="s">&#34;SP&#34;</span><span class="p">,</span>
-  <span class="m">22222222222</span>    <span class="p">,</span> <span class="s">&#34;Mossoró&#34;</span>       <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
-  <span class="m">33333333333</span>    <span class="p">,</span> <span class="s">&#34;Natal&#34;</span>         <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
-  <span class="m">44444444444</span>    <span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span>
+  <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;São Paulo&#34;</span>     <span class="p">,</span> <span class="s">&#34;SP&#34;</span><span class="p">,</span>
+  <span class="m">22222222222</span><span class="p">,</span> <span class="s">&#34;Mossoró&#34;</span>       <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">33333333333</span><span class="p">,</span> <span class="s">&#34;Natal&#34;</span>         <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
+  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span>
 <span class="p">)</span>
 <span class="n">tbl_2</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 3
@@ -482,7 +484,7 @@
 ## 2 22222222222 Mossoró        RN    
 ## 3 33333333333 Natal          RN    
 ## 4 44444444444 Rio de Janeiro RJ
-</code></pre></div><p>Observe agora que a coluna <code>cpf</code> da <code>tbl_1</code> está com uma linha a mais, e que esta não possui nenhuma outra linha idêntica no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na <code>tbl_2</code>. Neste caso, nosso join ficaria assim:</p>
+</code></pre></div><p>Observe agora que a coluna <code>cpf</code> da <code>tbl_1</code> está com uma linha a mais e que esta não possui uma correspondente no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na <code>tbl_2</code>. Neste caso, o join ficaria assim:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">left_join</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">tbl_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;cpf&#34;</span> <span class="o">=</span> <span class="s">&#34;cpf_cliente&#34;</span><span class="p">))</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 5
 ##           cpf nome  idade cidade         estado
@@ -494,7 +496,7 @@
 ## 5 55555555555 Messi    34 &lt;NA&gt;           &lt;NA&gt;
 </code></pre></div><h1 id="mesclando-os-conjuntos-de-dados">Mesclando os conjuntos de dados</h1>
 <p>Agora que importamos todos os dados que precisamos e sabemos como funciona o <code>left_join()</code>, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos <code>by = c(&quot;codigo&quot; = &quot;muni_id_6&quot;)</code>.</p>
-<p>Uma das maneiras de fazer join em nossos dados é assim:</p>
+<p>Uma das maneiras de fazer o left_join em nossos dados é assim:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># 2010</span>
 <span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">&lt;-</span> <span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span> 
   <span class="nf">left_join</span><span class="p">(</span><span class="n">auxiliar</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;codigo&#34;</span> <span class="o">=</span> <span class="s">&#34;muni_id_6&#34;</span><span class="p">))</span>
@@ -520,7 +522,7 @@
     <span class="nf">rename</span><span class="p">(</span><span class="n">cod_ibge</span> <span class="o">=</span> <span class="n">muni_id</span><span class="p">,</span> <span class="n">uf</span> <span class="o">=</span> <span class="n">uf_sigla</span><span class="p">,</span> <span class="n">regiao</span> <span class="o">=</span> <span class="n">regiao_nm</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="nf">relocate</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">cod_ibge</span><span class="p">,</span> <span class="n">regiao</span><span class="p">,</span> <span class="n">uf</span><span class="p">),</span> <span class="n">.before</span> <span class="o">=</span> <span class="n">municipio</span><span class="p">)</span>
 <span class="p">}</span>
-</code></pre></div><p>Criada a função, agora podemos simplesmente passar nossa lista <code>morte_infantil</code> e a função <code>mesclar_dados</code> como argumentos para o <code>map()</code> e ver a mágica acontecer:</p>
+</code></pre></div><p>Criada a função, agora podemos simplesmente passar a lista <code>morte_infantil</code> e a função <code>mesclar_dados</code> como argumentos para o <code>map()</code> e ver a mágica acontecer:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">morte_infantil_mesclado</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span>
 
 <span class="n">morte_infantil_mesclado</span>
@@ -571,9 +573,9 @@
 ##  9 1100114  Norte  RO    Jaru                      6  2012
 ## 10 1100122  Norte  RO    Ji-Paraná                10  2012
 ## # ... with 2,303 more rows
-</code></pre></div><p>Pronto! Simples assim! O <code>map()</code> aplicou nossa função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames mesclados.</p>
-<p>Por fim, se quisermos exportar nossos dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do <code>{purrr}</code>: a <code>walk()</code>. <code>walk()</code> funciona de forma semelhante ao <code>map()</code>, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a <code>write.csv2()</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># utilizando o pipe</span>
+</code></pre></div><p>Pronto! Simples assim! O <code>map()</code> aplicou a função em cada um dos data frames contidos na lista e nos retornou uma outra lista com os data frames já mesclados. Agora temos as colunas <code>cod_ibge</code>, <code>regiao</code> e <code>uf</code> em todos os anos.</p>
+<p>Por fim, se quisermos exportar os dados em um arquivo csv para cada ano, podemos usar mais uma incrível função do <code>{purrr}</code>: a <code>walk()</code>. <code>walk()</code> funciona de forma semelhante ao <code>map()</code>, passamos como argumento a lista e a função que desejamos aplicar nela, neste caso, a <code>write.csv2()</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># com o pipe</span>
 
 <span class="n">morte_infantil_mesclado</span> <span class="o">%&gt;%</span>
   <span class="nf">names</span><span class="p">(</span><span class="n">.)</span> <span class="o">%&gt;%</span>
@@ -593,12 +595,12 @@
     <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span>
   <span class="p">)</span>
 <span class="p">)</span>
-</code></pre></div><p>No argumento <code>file</code> passe o caminho da pasta no seu computador onde deseja salvar os arquivos exportados (basta substituir somente a parte <code>./dados-mesclados/</code>).</p>
+</code></pre></div><p><strong>O caminho que passei no argumento <code>file</code> é relativo ao meu projeto e pode ser diferente no seu caso</strong>. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador.</p>
 <p>Se desejar &ldquo;empilhar&rdquo; todos os anos e exportar tudo em um único arquivo csv, use:</p>
-<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">map_df</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span> <span class="o">%&gt;%</span>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">map_dfr</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span> <span class="o">%&gt;%</span>
   <span class="nf">write.csv2</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="s">&#34;./dados-mesclados/mortes_infantis_mesclado.csv&#34;</span><span class="p">,</span>
              <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
-</code></pre></div><p>Bom, por hoje só. O código completo dessa postagem está disponível no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-15-leftjoin">GitHub</a>. Na segunda parte darei continuidade falando sobre o <code>inner_join()</code>, que nos permite mesclar dois ou mais conjuntos de dados a partir de uma ou mais colunas chave mantendo somente as linhas que é comum entre todos eles.</p>
+</code></pre></div><p>Bom, por hoje só. O código completo dessa postagem está disponível no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin">GitHub</a>. Na segunda parte darei continuidade falando sobre o <code>inner_join()</code>, que nos permite mesclar dois ou mais conjuntos de dados a partir de uma ou mais colunas chave mantendo somente as linhas que é comum entre todos eles.</p>
 <p>Até a próxima 😄.</p>
 <h1 id="referências">Referências</h1>
 <ul>
