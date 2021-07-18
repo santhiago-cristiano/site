@@ -497,7 +497,7 @@ Bom, por hoje só. O código completo dessa postagem está disponível no meu [G
 
 Até a próxima 😄.
 
-# Referências
+# Links Úteis
 
 - https://readr.tidyverse.org/
 
