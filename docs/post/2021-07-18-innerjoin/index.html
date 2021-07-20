@@ -59,7 +59,7 @@
   "headline": "Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()",
   "description" : "Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.",
   "inLanguage" : "br",
-  "wordCount":  1891 ,
+  "wordCount":  1883 ,
   "datePublished" : "2021-07-20T00:00:00",
   "dateModified" : "2021-07-20T00:00:00",
   "image" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
@@ -267,15 +267,14 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função <code>inner_join()</code> do pacote <code>{dplyr}</code>. Na <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">primeira parte</a>, demonstrei como podemos mesclar dois ou mais conjuntos de dados usando a função <code>left_join()</code> também do <code>{dplyr}</code></p>
-<p>Bom, seguindo em frente, utilizarei os mesmos conjuntos de dados do <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">primeiro post</a>, que podem ser baixados <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados-mesclados">clicando aqui</a>. Esses são os dados que foram exportados após feita a mesclagem utilizando <code>left_join()</code>.</p>
+        <p>Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função <code>inner_join()</code> do pacote <code>{dplyr}</code>. Na <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">primeira parte</a>, demonstrei como podemos mesclar dois ou mais conjuntos de dados usando a função <code>left_join()</code>. Seguindo em frente, utilizarei os mesmos conjuntos de dados do primeiro post, que podem ser baixados <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados-mesclados">clicando aqui</a>.</p>
 <h1 id="pacotes-e-importação-dos-dados">Pacotes e importação dos dados</h1>
 <p>Todo esse processo inicial é semelhante ao do primeiro post: carregamos os pacotes que serão usados e em seguida importamos os dados para o R. Como já descrevi esse processo com mais detalhes na <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">parte I</a>, serei breve dessa vez para não se tornar repetitivo.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span>
-</code></pre></div><p>O <code>{readr}</code> serve para fazermos a leitura e importação dos dados para o R; o <code>{dplyr}</code> ;
-e o <code>{purrr}</code> tem funções que simplificam o processo de loop e será útil para importar todos os conjuntos de dados de uma única vez.</p>
+</code></pre></div><p>O <code>{readr}</code> serve para fazermos a leitura e importação dos dados para o R; o <code>{dplyr}</code> serve para manejarmos os dados;
+e o <code>{purrr}</code> tem funções que simplificam o processo de loop e será útil entre outras coisas para importar todos os conjuntos de dados de uma única vez.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">arquivos_csv</span> <span class="o">&lt;-</span> <span class="nf">list.files</span><span class="p">(</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s">&#34;./dados/&#34;</span><span class="p">,</span>
   <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#34;*.csv&#34;</span><span class="p">,</span>
@@ -346,10 +345,10 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
 <h1 id="dplyrinner_join">dplyr::inner_join()</h1>
 <p>A função <code>inner_join()</code> possui os mesmos argumentos do <code>left_join()</code>:</p>
 <p><code>inner_join(x, y, by = NULL, copy = FALSE, suffix = c(&quot;.x&quot;, &quot;.y&quot;), ...)</code></p>
-<p>A diferença entre as duas é que, enquanto <code>left_join()</code> nos retorna todas as linhas de <code>x</code>, todas as colunas de <code>x</code> e <code>y</code> e preenche com <code>NA</code> as linhas em <code>x</code> que não possuem uma correspondente em <code>y</code>, <code>inner_join()</code> retorna <strong>somente as linhas de <code>x</code> onde existem valores correpondentes em <code>y</code></strong>, ou seja, teremos como retorno um novo conjunto de dados em que estão presentes somente as linhas que são comuns entre ambos. Além disso, <code>inner_join()</code> também retorna todas as colunas de <code>x</code> e <code>y</code>.</p>
-<p>Novamente, <code>x</code> e <code>y</code> correspondem aos conjuntos de dados que desejamos unir, enquanto <code>by</code> recebe o nome da coluna (ou colunas, pode ser mais de uma) que servirá como chave para unir os dados. <code>by = &quot;nome da coluna&quot;</code> é usado quando o nome da coluna é o mesmo em ambos os conjuntos de dados, e <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code> quando os nomes das colunas são diferentes. Como sempre, exemplos podem nos ajudar a entender melhor como as coisas acontecem.</p>
+<p>A diferença entre as duas é que, enquanto <code>left_join()</code> nos retorna todas as linhas de <code>x</code>, todas as colunas de <code>x</code> e <code>y</code> e preenche com <code>NA</code> as linhas em <code>x</code> que não possuem uma correspondente em <code>y</code>, <code>inner_join()</code> retorna <strong>somente as linhas de <code>x</code> onde existem valores correpondentes em <code>y</code></strong>, ou seja, teremos como retorno um novo conjunto de dados em que estarão presentes somente as linhas que são comuns entre ambos. Além disso, <code>inner_join()</code> também retorna todas as colunas de <code>x</code> e <code>y</code>.</p>
+<p>Novamente, <code>x</code> e <code>y</code> correspondem aos conjuntos de dados que desejamos unir, enquanto <code>by</code> recebe o nome da coluna (ou colunas, pode ser mais de uma) que servirá como chave para unir os dados. <code>by = &quot;nome da coluna&quot;</code> é usado quando o nome da coluna é o mesmo em ambos os conjuntos de dados e <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code> quando os nomes das colunas são diferentes. Como sempre, exemplos podem nos ajudar a entender melhor como as coisas acontecem.</p>
 <h2 id="exemplo">Exemplo</h2>
-<p>Admita que tenhamos dois conjuntos de dados com o desempenho dos alunos do ensino fundamental de determinada escola do Brasil em dois anos diferentes, 2019 e 2020, e desejamos unir esses dados trazendo somente os alunos que estão presentes nos dois anos para verificar se houve uma melhora ou piora no desempenho de cada um deles de um ano para o outro.</p>
+<p>Admita que tenhamos dois conjuntos de dados com o desempenho dos alunos do ensino fundamental de determinada escola do Brasil em dois anos diferentes: 2019 e 2020. E desejamos unir esses dados trazendo somente os alunos que estão presentes nos dois anos para verificar se houve uma melhora ou piora no desempenho de cada um deles de um ano para o outro.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2019</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
   <span class="o">~</span> <span class="n">matricula</span><span class="p">,</span>   <span class="o">~</span> <span class="n">nome</span><span class="p">,</span>     <span class="o">~</span> <span class="n">media</span><span class="p">,</span>
   <span class="m">10</span><span class="p">,</span>            <span class="s">&#34;João&#34;</span><span class="p">,</span>     <span class="m">7.1</span><span class="p">,</span>
@@ -366,7 +365,7 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
   <span class="m">13</span><span class="p">,</span>             <span class="s">&#34;Ana&#34;</span><span class="p">,</span>        <span class="m">10.0</span><span class="p">,</span>
   <span class="m">14</span><span class="p">,</span>             <span class="s">&#34;Francisco&#34;</span><span class="p">,</span>  <span class="m">4.3</span>
 <span class="p">)</span>
-</code></pre></div><p>Podemos utilizar a coluna com o número da matrícula como chave para unir os dados, passando-a para o argumento <code>by</code></p>
+</code></pre></div><p>Podemos utilizar a coluna com o número da matrícula como chave para unir os dados passando-a para o argumento <code>by</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2019</span> <span class="o">%&gt;%</span>
   <span class="nf">inner_join</span><span class="p">(</span><span class="n">alunos_2020</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;matricula&#34;</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 3 x 5
@@ -394,7 +393,7 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
 ## 2        11 José             5.4 José             8.5
 ## 3        12 Maria            8.7 Maria            5.2
 </code></pre></div><h1 id="juntando-os-conjuntos-de-dados">Juntando os conjuntos de dados</h1>
-<p>Feito essa explicação, agora vamos juntar os conjuntos de dados que foram importados lá no ínicio mantendo somente os municípios que estão presentes em todos os anos (2010, 2011 e 2012). Como chave para unir os dados, utilizarei a coluna <code>cod_ibge</code>, que possui o código IBGE de 7 digítos para cada município.</p>
+<p>Feito essa explicação, agora vamos juntar os conjuntos de dados que foram importados lá no ínicio mantendo somente os municípios que estão presentes em todos os anos (2010, 2011 e 2012). Como chave para unir os dados utilizarei a coluna <code>cod_ibge</code>, que possui o código IBGE de 7 digítos para cada município.</p>
 <p>Uma das maneiras de unir nossos dados é assim:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="n">mortes_infantis[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span>
   <span class="nf">inner_join</span><span class="p">(</span>
@@ -405,10 +404,11 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
   <span class="nf">inner_join</span><span class="p">(</span><span class="n">mortes_infantis[[</span><span class="s">&#34;2012&#34;</span><span class="n">]]</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">)</span>
 </code></pre></div><p>Ok. Parece bom. Mas e se pudéssemos simplificar isso deixando nosso código mais limpo e legível? Com <code>purrr::reduce()</code> isso é possível!</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">mortes_infantis</span><span class="p">,</span>
-                                <span class="n">inner_join</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">,</span>
+                                <span class="n">inner_join</span><span class="p">,</span>
+                                <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">,</span>
                                 <span class="n">suffix</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2010&#34;</span><span class="p">,</span> <span class="s">&#34;_2011&#34;</span><span class="p">))</span>
-</code></pre></div><p>Para a função <code>reduce()</code> passamos a lista que contém os data frames que queremos juntar e a função <code>inner_join()</code> com os seus devidos argumentos. Simples assim! É incrível O que conseguimos fazer utilizando o <code>{purrr}</code>, pretendo demonstrar um pouco mais do seu &ldquo;poder&rdquo; em um post futuro.</p>
-<p>Agora temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:</p>
+</code></pre></div><p>Para a função <code>reduce()</code> passamos a lista que contém os data frames que queremos juntar, e a função <code>inner_join()</code> com os seus devidos argumentos. Simples assim! É incrível o que conseguimos fazer utilizando o <code>{purrr}</code>, pretendo demonstrar um pouco mais do seu &ldquo;poder&rdquo; em um post futuro.</p>
+<p>Agora, temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">glimpse</span><span class="p">(</span><span class="n">mortes_infantis_inner</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## Rows: 1,447
 ## Columns: 16
@@ -428,7 +428,7 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
 ## $ municipio      &lt;chr&gt; &#34;Alta Floresta D&#39;Oeste&#34;, &#34;Ariquemes&#34;, &#34;Cacoal&#34;, &#34;Costa ~
 ## $ total          &lt;dbl&gt; 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7~
 ## $ ano            &lt;int&gt; 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2~
-</code></pre></div><p>Como era esperado, foi acrescentado o sufixo <code>_2010</code> para as colunas do ano 2010 e <code>_2011</code> para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, como nesse caso sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essa colunas repetidas:</p>
+</code></pre></div><p>Como era esperado, foi acrescentado o sufixo <code>_2010</code> para as colunas do ano 2010 e <code>_2011</code> para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, no entanto, como sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essas colunas repetidas:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="n">mortes_infantis_inner</span> <span class="o">%&gt;%</span>
   <span class="nf">select</span><span class="p">(</span>
     <span class="o">!</span><span class="p">(</span><span class="nf">contains</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;regiao&#34;</span><span class="p">,</span> <span class="s">&#34;uf&#34;</span><span class="p">,</span> <span class="s">&#34;municipio&#34;</span><span class="p">,</span> <span class="s">&#34;ano&#34;</span><span class="p">))</span> <span class="o">&amp;</span>
@@ -437,7 +437,7 @@ e o <code>{purrr}</code> tem funções que simplificam o processo de loop e ser�
   <span class="p">)</span> <span class="o">%&gt;%</span>
   <span class="nf">rename</span><span class="p">(</span><span class="n">total_2012</span> <span class="o">=</span> <span class="n">total</span><span class="p">)</span> <span class="o">%&gt;%</span>
   <span class="nf">relocate</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">regiao</span><span class="p">,</span> <span class="n">uf</span><span class="p">,</span> <span class="n">municipio</span><span class="p">),</span> <span class="n">.after</span> <span class="o">=</span> <span class="n">cod_ibge</span><span class="p">)</span>
-</code></pre></div><p>Para remover todas as colunas desejadas, peço para a função <code>select()</code> do <code>{dplyr}</code> selecionar somente as colunas que <strong>ao mesmo tempo</strong> não contenham as palavras <code>&quot;regiao&quot;</code>, <code>&quot;uf&quot;</code>, <code>&quot;municipio&quot;</code> e <code>&quot;ano&quot;</code> <strong>e</strong> termine com os sufixos <code>&quot;_2010&quot;</code> ou <code>&quot;_2011&quot;</code>. Além disso, apenas renomeio e reposiciono outras colunas com <code>dplyr::rename()</code> e <code>dplyr::relocate()</code>, respectivamente.</p>
+</code></pre></div><p>Para remover todas as colunas desejadas, peço para a função <code>select()</code> do <code>{dplyr}</code> selecionar somente as colunas que <strong>simultaneamente</strong> não contenham em seus nomes as palavras <code>&quot;regiao&quot;</code>, <code>&quot;uf&quot;</code>, <code>&quot;municipio&quot;</code> ou <code>&quot;ano&quot;</code> <strong>e</strong> termine com os sufixos <code>&quot;_2010&quot;</code> ou <code>&quot;_2011&quot;</code>. Após isso, apenas renomeio e reposiciono as outras colunas com <code>dplyr::rename()</code> e <code>dplyr::relocate()</code>, respectivamente.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">glimpse</span><span class="p">(</span><span class="n">mortes_infantis_inner</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## Rows: 1,447
 ## Columns: 7

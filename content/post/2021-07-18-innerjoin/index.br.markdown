@@ -16,9 +16,7 @@ image: ''
 ---
 
 
-Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função `inner_join()` do pacote `{dplyr}`. Na [primeira parte](https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/), demonstrei como podemos mesclar dois ou mais conjuntos de dados usando a função `left_join()` também do `{dplyr}`
-
-Bom, seguindo em frente, utilizarei os mesmos conjuntos de dados do [primeiro post](https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/), que podem ser baixados [clicando aqui](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados-mesclados). Esses são os dados que foram exportados após feita a mesclagem utilizando `left_join()`.
+Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função `inner_join()` do pacote `{dplyr}`. Na [primeira parte](https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/), demonstrei como podemos mesclar dois ou mais conjuntos de dados usando a função `left_join()`. Seguindo em frente, utilizarei os mesmos conjuntos de dados do primeiro post, que podem ser baixados [clicando aqui](https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados-mesclados). 
 
 
 # Pacotes e importação dos dados
@@ -32,8 +30,8 @@ library(dplyr)
 library(purrr)
 ```
 
-O `{readr}` serve para fazermos a leitura e importação dos dados para o R; o `{dplyr}` ;
-e o `{purrr}` tem funções que simplificam o processo de loop e será útil para importar todos os conjuntos de dados de uma única vez.
+O `{readr}` serve para fazermos a leitura e importação dos dados para o R; o `{dplyr}` serve para manejarmos os dados;
+e o `{purrr}` tem funções que simplificam o processo de loop e será útil entre outras coisas para importar todos os conjuntos de dados de uma única vez.
 
 
 ```r
@@ -123,13 +121,13 @@ A função `inner_join()` possui os mesmos argumentos do `left_join()`:
 
 `inner_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)`
 
-A diferença entre as duas é que, enquanto `left_join()` nos retorna todas as linhas de `x`, todas as colunas de `x` e `y` e preenche com `NA` as linhas em `x` que não possuem uma correspondente em `y`, `inner_join()` retorna **somente as linhas de `x` onde existem valores correpondentes em `y`**, ou seja, teremos como retorno um novo conjunto de dados em que estão presentes somente as linhas que são comuns entre ambos. Além disso, `inner_join()` também retorna todas as colunas de `x` e `y`.
+A diferença entre as duas é que, enquanto `left_join()` nos retorna todas as linhas de `x`, todas as colunas de `x` e `y` e preenche com `NA` as linhas em `x` que não possuem uma correspondente em `y`, `inner_join()` retorna **somente as linhas de `x` onde existem valores correpondentes em `y`**, ou seja, teremos como retorno um novo conjunto de dados em que estarão presentes somente as linhas que são comuns entre ambos. Além disso, `inner_join()` também retorna todas as colunas de `x` e `y`.
 
-Novamente, `x` e `y` correspondem aos conjuntos de dados que desejamos unir, enquanto `by` recebe o nome da coluna (ou colunas, pode ser mais de uma) que servirá como chave para unir os dados. `by = "nome da coluna"` é usado quando o nome da coluna é o mesmo em ambos os conjuntos de dados, e `by = c("nome da coluna em x" = "nome da coluna em y")` quando os nomes das colunas são diferentes. Como sempre, exemplos podem nos ajudar a entender melhor como as coisas acontecem.
+Novamente, `x` e `y` correspondem aos conjuntos de dados que desejamos unir, enquanto `by` recebe o nome da coluna (ou colunas, pode ser mais de uma) que servirá como chave para unir os dados. `by = "nome da coluna"` é usado quando o nome da coluna é o mesmo em ambos os conjuntos de dados e `by = c("nome da coluna em x" = "nome da coluna em y")` quando os nomes das colunas são diferentes. Como sempre, exemplos podem nos ajudar a entender melhor como as coisas acontecem.
 
 ## Exemplo
 
-Admita que tenhamos dois conjuntos de dados com o desempenho dos alunos do ensino fundamental de determinada escola do Brasil em dois anos diferentes, 2019 e 2020, e desejamos unir esses dados trazendo somente os alunos que estão presentes nos dois anos para verificar se houve uma melhora ou piora no desempenho de cada um deles de um ano para o outro.
+Admita que tenhamos dois conjuntos de dados com o desempenho dos alunos do ensino fundamental de determinada escola do Brasil em dois anos diferentes: 2019 e 2020. E desejamos unir esses dados trazendo somente os alunos que estão presentes nos dois anos para verificar se houve uma melhora ou piora no desempenho de cada um deles de um ano para o outro.
 
 
 ```r
@@ -151,8 +149,7 @@ alunos_2020 <- tibble::tribble(
 )
 ```
 
-
-Podemos utilizar a coluna com o número da matrícula como chave para unir os dados, passando-a para o argumento `by`
+Podemos utilizar a coluna com o número da matrícula como chave para unir os dados passando-a para o argumento `by`:
 
 
 ```r
@@ -205,7 +202,7 @@ alunos_2020 %>%
 
 # Juntando os conjuntos de dados
 
-Feito essa explicação, agora vamos juntar os conjuntos de dados que foram importados lá no ínicio mantendo somente os municípios que estão presentes em todos os anos (2010, 2011 e 2012). Como chave para unir os dados, utilizarei a coluna `cod_ibge`, que possui o código IBGE de 7 digítos para cada município.
+Feito essa explicação, agora vamos juntar os conjuntos de dados que foram importados lá no ínicio mantendo somente os municípios que estão presentes em todos os anos (2010, 2011 e 2012). Como chave para unir os dados utilizarei a coluna `cod_ibge`, que possui o código IBGE de 7 digítos para cada município.
 
 Uma das maneiras de unir nossos dados é assim:
 
@@ -225,13 +222,14 @@ Ok. Parece bom. Mas e se pudéssemos simplificar isso deixando nosso código mai
 
 ```r
 mortes_infantis_inner <- reduce(mortes_infantis,
-                                inner_join, by = "cod_ibge",
+                                inner_join,
+                                by = "cod_ibge",
                                 suffix = c("_2010", "_2011"))
 ```
 
-Para a função `reduce()` passamos a lista que contém os data frames que queremos juntar e a função `inner_join()` com os seus devidos argumentos. Simples assim! É incrível O que conseguimos fazer utilizando o `{purrr}`, pretendo demonstrar um pouco mais do seu "poder" em um post futuro.
+Para a função `reduce()` passamos a lista que contém os data frames que queremos juntar, e a função `inner_join()` com os seus devidos argumentos. Simples assim! É incrível o que conseguimos fazer utilizando o `{purrr}`, pretendo demonstrar um pouco mais do seu "poder" em um post futuro.
 
-Agora temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:
+Agora, temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:
 
 
 ```r
@@ -258,7 +256,7 @@ glimpse(mortes_infantis_inner)
 ## $ total          <dbl> 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7~
 ## $ ano            <int> 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2~
 ```
-Como era esperado, foi acrescentado o sufixo `_2010` para as colunas do ano 2010 e `_2011` para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, como nesse caso sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essa colunas repetidas:
+Como era esperado, foi acrescentado o sufixo `_2010` para as colunas do ano 2010 e `_2011` para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, no entanto, como sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essas colunas repetidas:
 
 
 ```r
@@ -272,7 +270,7 @@ mortes_infantis_inner <- mortes_infantis_inner %>%
   relocate(c(regiao, uf, municipio), .after = cod_ibge)
 ```
 
-Para remover todas as colunas desejadas, peço para a função `select()` do `{dplyr}` selecionar somente as colunas que **ao mesmo tempo** não contenham as palavras `"regiao"`, `"uf"`, `"municipio"` e `"ano"` **e** termine com os sufixos `"_2010"` ou `"_2011"`. Além disso, apenas renomeio e reposiciono outras colunas com `dplyr::rename()` e `dplyr::relocate()`, respectivamente.
+Para remover todas as colunas desejadas, peço para a função `select()` do `{dplyr}` selecionar somente as colunas que **simultaneamente** não contenham em seus nomes as palavras `"regiao"`, `"uf"`, `"municipio"` ou `"ano"` **e** termine com os sufixos `"_2010"` ou `"_2011"`. Após isso, apenas renomeio e reposiciono as outras colunas com `dplyr::rename()` e `dplyr::relocate()`, respectivamente.
 
 
 ```r
