@@ -3,33 +3,39 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://santhiago-cristiano.github.io/site/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://santhiago-cristiano.github.io/site/categories/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/post/2021-07-18-innerjoin/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/tags/dplyr/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/tags/inner-join/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/tags/joins/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/post/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/tags/r/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/categories/r/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://santhiago-cristiano.github.io/site/tags/</loc>
+    <lastmod>2021-07-20T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/</loc>
     <lastmod>2021-07-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/tags/dplyr/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/tags/joins/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://santhiago-cristiano.github.io/site/tags/left-join/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/post/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/tags/r/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/categories/r/</loc>
-    <lastmod>2021-07-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://santhiago-cristiano.github.io/site/tags/</loc>
     <lastmod>2021-07-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://santhiago-cristiano.github.io/site/page/contact/</loc>

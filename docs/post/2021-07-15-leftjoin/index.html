@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Como mesclar conjuntos de dados no R. Parte I: left_join() - Santhiago Cristiano</title>
-  <meta name="description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
+  <title>Como juntar conjuntos de dados no R. Parte I: dplyr::left_join() - Santhiago Cristiano</title>
+  <meta name="description" content="Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
   <meta name="author" content="Santhiago Cristiano"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -45,7 +45,7 @@
         "position": 3,
         "item": {
           "@id": "https:\/\/santhiago-cristiano.github.io\/site\/post\/2021-07-15-leftjoin\/",
-          "name": "Como mesclar conjuntos de dados no r. parte i left join()"
+          "name": "Como juntar conjuntos de dados no r. parte i dplyr left join()"
         }
     }]
 }
@@ -56,10 +56,10 @@
   "author": {
     "name" : "Santhiago Cristiano"
   },
-  "headline": "Como mesclar conjuntos de dados no R. Parte I: left_join()",
-  "description" : "Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.",
+  "headline": "Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()",
+  "description" : "Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.",
   "inLanguage" : "br",
-  "wordCount":  2799 ,
+  "wordCount":  2900 ,
   "datePublished" : "2021-07-16T00:00:00",
   "dateModified" : "2021-07-16T00:00:00",
   "image" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
@@ -78,15 +78,15 @@
 }
 </script>
 
-<meta property="og:title" content="Como mesclar conjuntos de dados no R. Parte I: left_join()" />
-<meta property="og:description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
+<meta property="og:title" content="Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()" />
+<meta property="og:description" content="Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.">
 <meta property="og:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
 <meta property="og:url" content="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Santhiago Cristiano" />
 
-  <meta name="twitter:title" content="Como mesclar conjuntos de dados no R. Parte I: left_join()" />
-  <meta name="twitter:description" content="Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função …">
+  <meta name="twitter:title" content="Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()" />
+  <meta name="twitter:description" content="Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do …">
   <meta name="twitter:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://santhiago-cristiano.github.io/site/img/myfavicon.ico' rel='icon' type='image/x-icon'/>
@@ -232,7 +232,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="post-heading">
               
-                <h1>Como mesclar conjuntos de dados no R. Parte I: left_join()</h1>
+                <h1>Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()</h1>
               
               
               
@@ -267,8 +267,7 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função <code>left_join()</code> do pacote <code>{dplyr}</code>.</p>
-<p><em>Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.</em> 😉</p>
+        <p>Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função <code>left_join()</code> do pacote <code>{dplyr}</code>.</p>
 <h1 id="base-de-dados">Base de dados</h1>
 <p>Antes de tudo, precisamos obter nossos dados. Os dados para este post foram obtidos no DATASUS e correpondem aos óbitos infantis nos anos de 2010, 2011 e 2012. Os dados originais sem nenhuma modificação podem ser obtidos <a href="https://datasus.saude.gov.br/mortalidade-desde-1996-pela-cid-10">aqui</a>. Os dados que utilizarei como exemplo já passaram por uma breve limpeza e podem ser baixados no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados">GitHub</a>.</p>
 <h1 id="pacotes-e-criação-do-projeto">Pacotes e criação do projeto</h1>
@@ -282,7 +281,7 @@
 </code></pre></div><p>Se ainda não possui esses pacotes instalados, você pode instalar todos de uma só vez rodando o comando abaixo:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;readr&#34;</span><span class="p">,</span> <span class="s">&#34;dplyr&#34;</span><span class="p">,</span> <span class="s">&#34;abjData&#34;</span><span class="p">,</span> <span class="s">&#34;purrr&#34;</span><span class="p">,</span> <span class="s">&#34;glue&#34;</span><span class="p">))</span>
 </code></pre></div><h1 id="importando-os-dados-para-o-r">Importando os dados para o R</h1>
-<p>Para importar nossos dados para o R, primeiramente utilizamos a função <code>list.files()</code>, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.</p>
+<p>Para importar os dados para o R, primeiramente utilizamos a função <code>list.files()</code>, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># lista todos os arquivos csv contidos na minha pasta &#34;dados/&#34; </span>
 
 <span class="n">arquivos_csv</span> <span class="o">&lt;-</span> <span class="nf">list.files</span><span class="p">(</span>
@@ -310,7 +309,6 @@
 <span class="nf">names</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="m">2010</span><span class="o">:</span><span class="m">2012</span>
 </code></pre></div><p>Como argumentos para <code>read_csv2()</code> passamos o encoding dos nossos arquivos csv dentro da função <code>locale()</code>, que neste caso é <code>latin1</code>. O <code>latin1</code> é apenas um dos diversos encodings existentes, para saber mais, <a href="https://en.wikipedia.org/wiki/Character_encoding">clique aqui</a>. Além do encoding, passamos <code>col_names = TRUE</code>, para que a primeira linha dos nossos arquivos sejam reconhecidas como os nomes das colunas. Podemos ainda definir explicitamente o tipo de cada coluna com <code>col_types</code>. Nos dados temos 4 colunas, então, a primeira e a segunda coluna serão do tipo <code>c = character</code>, a terceira do tipo <code>d = double</code> e a última do tipo <code>i = integer</code>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># visualizando a lista</span>
-
 <span class="n">morte_infantil</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## $`2010`
 ## # A tibble: 2,386 x 4
@@ -395,7 +393,7 @@
 <h1 id="dplyrleft_join">dplyr::left_join()</h1>
 <p>A função <code>left_join()</code> possui os seguintes argumentos:</p>
 <p><code>left_join(x, y, by = NULL, copy = FALSE, suffix = c(&quot;.x&quot;, &quot;.y&quot;), ...)</code></p>
-<p>Para o caso em questão, precisamos somente dos três primeiros. <code>x</code> e <code>y</code>correpondem aos dois conjuntos de dados que desejamos mesclar. Para o <code>by</code>, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente <code>by = &quot;nome da coluna&quot;</code>, já quando os nomes das colunas são diferentes, usamos <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code>.</p>
+<p>Para o caso em questão, precisamos somente dos três primeiros. <code>x</code> e <code>y</code>correspondem aos dois conjuntos de dados que desejamos juntar. Para o <code>by</code>, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente <code>by = &quot;nome da coluna&quot;</code>, já quando os nomes das colunas são diferentes, usamos <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code>.</p>
 <p>O <code>left_join()</code> irá retornar todas as linhas de <code>x</code> e todas as colunas de <code>x</code> e <code>y</code>. As linhas em <code>x</code> que não possuem uma correspondente em <code>y</code> são preenchidas automaticamente com <code>NA</code>. Talvez tudo isso tenha ficado um pouco confuso, mas com exemplos pode ficar mais claro.</p>
 <h2 id="exemplo-1">Exemplo 1</h2>
 <p>Admita que tenhamos dois data frames (<a href="https://tibble.tidyverse.org/">tibbles</a>), que chamarei de <code>tbl_1</code> e <code>tbl_2</code>:</p>
@@ -474,18 +472,21 @@
   <span class="m">11111111111</span><span class="p">,</span> <span class="s">&#34;São Paulo&#34;</span>     <span class="p">,</span> <span class="s">&#34;SP&#34;</span><span class="p">,</span>
   <span class="m">22222222222</span><span class="p">,</span> <span class="s">&#34;Mossoró&#34;</span>       <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
   <span class="m">33333333333</span><span class="p">,</span> <span class="s">&#34;Natal&#34;</span>         <span class="p">,</span> <span class="s">&#34;RN&#34;</span><span class="p">,</span>
-  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span>
+  <span class="m">44444444444</span><span class="p">,</span> <span class="s">&#34;Rio de Janeiro&#34;</span><span class="p">,</span> <span class="s">&#34;RJ&#34;</span><span class="p">,</span>
+  <span class="m">66666666666</span><span class="p">,</span> <span class="s">&#34;Recife&#34;</span>        <span class="p">,</span> <span class="s">&#34;PE&#34;</span>  
 <span class="p">)</span>
 <span class="n">tbl_2</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 4 x 3
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 3
 ##   cpf_cliente cidade         estado
 ##         &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
 ## 1 11111111111 São Paulo      SP    
 ## 2 22222222222 Mossoró        RN    
 ## 3 33333333333 Natal          RN    
-## 4 44444444444 Rio de Janeiro RJ
+## 4 44444444444 Rio de Janeiro RJ    
+## 5 66666666666 Recife         PE
 </code></pre></div><p>Observe agora que a coluna <code>cpf</code> da <code>tbl_1</code> está com uma linha a mais e que esta não possui uma correspondente no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na <code>tbl_2</code>. Neste caso, o join ficaria assim:</p>
-<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">left_join</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">tbl_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;cpf&#34;</span> <span class="o">=</span> <span class="s">&#34;cpf_cliente&#34;</span><span class="p">))</span>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_1</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">tbl_2</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;cpf&#34;</span> <span class="o">=</span> <span class="s">&#34;cpf_cliente&#34;</span><span class="p">))</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 5
 ##           cpf nome  idade cidade         estado
 ##         &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
@@ -494,8 +495,20 @@
 ## 3 33333333333 Fran     23 Natal          RN    
 ## 4 44444444444 Jõao     30 Rio de Janeiro RJ    
 ## 5 55555555555 Messi    34 &lt;NA&gt;           &lt;NA&gt;
-</code></pre></div><h1 id="mesclando-os-conjuntos-de-dados">Mesclando os conjuntos de dados</h1>
-<p>Agora que importamos todos os dados que precisamos e sabemos como funciona o <code>left_join()</code>, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos <code>by = c(&quot;codigo&quot; = &quot;muni_id_6&quot;)</code>.</p>
+</code></pre></div><p>Por fim, vale ressaltar que a ordem que passamos as tabelas no <code>left_join()</code> é importante. O resultado seria diferente se fizéssemos assim:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">tbl_2</span> <span class="o">%&gt;%</span> 
+  <span class="nf">left_join</span><span class="p">(</span><span class="n">tbl_1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;cpf_cliente&#34;</span> <span class="o">=</span> <span class="s">&#34;cpf&#34;</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 5 x 5
+##   cpf_cliente cidade         estado nome  idade
+##         &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+## 1 11111111111 São Paulo      SP     Maria    25
+## 2 22222222222 Mossoró        RN     José     40
+## 3 33333333333 Natal          RN     Fran     23
+## 4 44444444444 Rio de Janeiro RJ     Jõao     30
+## 5 66666666666 Recife         PE     &lt;NA&gt;     NA
+</code></pre></div><p>No primeiro caso, todas as linhas da <code>tbl_1</code> são retornadas, já no segundo, todas as linhas da <code>tbl_2</code> é que são retornadas.</p>
+<h1 id="juntando-os-conjuntos-de-dados">Juntando os conjuntos de dados</h1>
+<p>Agora que importamos todos os dados que precisamos e sabemos como funciona o <code>left_join()</code>, podemos enfim juntar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos <code>by = c(&quot;codigo&quot; = &quot;muni_id_6&quot;)</code>.</p>
 <p>Uma das maneiras de fazer o left_join em nossos dados é assim:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1"># 2010</span>
 <span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">&lt;-</span> <span class="n">morte_infantil[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span> 
@@ -595,7 +608,7 @@
     <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span>
   <span class="p">)</span>
 <span class="p">)</span>
-</code></pre></div><p><strong>O caminho que passei no argumento <code>file</code> é relativo ao meu projeto e pode ser diferente no seu caso</strong>. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador.</p>
+</code></pre></div><p>O caminho que passei no argumento <code>file</code> é relativo ao meu projeto e pode ser diferente no seu caso. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador.</p>
 <p>Se desejar &ldquo;empilhar&rdquo; todos os anos e exportar tudo em um único arquivo csv, use:</p>
 <div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">map_dfr</span><span class="p">(</span><span class="n">morte_infantil</span><span class="p">,</span> <span class="n">mesclar_dados</span><span class="p">)</span> <span class="o">%&gt;%</span>
   <span class="nf">write.csv2</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="s">&#34;./dados-mesclados/mortes_infantis_mesclado.csv&#34;</span><span class="p">,</span>
@@ -655,7 +668,7 @@
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;text=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;text=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20dplyr%3a%3aleft_join%28%29&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -669,28 +682,28 @@
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20dplyr%3a%3aleft_join%28%29" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20dplyr%3a%3aleft_join%28%29" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20dplyr%3a%3aleft_join%28%29" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;description=Como%20mesclar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20left_join%28%29" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-15-leftjoin%2f&amp;description=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20I%3a%20dplyr%3a%3aleft_join%28%29" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -704,6 +717,17 @@
 
         
           
+            
+          
+
+          
+                  <h4 class="see-also">Veja também</h4>
+                  <ul>
+                
+                
+                    <li><a href="/site/post/2021-07-18-innerjoin/">Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()</a></li>
+                
+              </ul>
 
           
         
@@ -712,6 +736,10 @@
       
         <ul class="pager blog-pager">
           
+          
+            <li class="next">
+              <a href="https://santhiago-cristiano.github.io/site/post/2021-07-18-innerjoin/" data-toggle="tooltip" data-placement="top" title="Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()">Próximo Post &rarr;</a>
+            </li>
           
         </ul>
       

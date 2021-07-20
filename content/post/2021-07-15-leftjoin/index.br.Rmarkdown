@@ -1,5 +1,5 @@
 ---
-title: "Como mesclar conjuntos de dados no R. Parte I: left_join()"
+title: "Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()"
 author: Santhiago Cristiano
 date: '2021-07-16'
 slug: []
@@ -15,9 +15,8 @@ subtitle: ''
 image: ''
 ---
 
-Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função `left_join()` do pacote `{dplyr}`.
+Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função `left_join()` do pacote `{dplyr}`.
 
-*Se estiver lendo pelo celular, vire na horizontal para uma melhor visualização.* 😉 
 
 # Base de dados
 
@@ -45,7 +44,7 @@ install.packages(c("readr", "dplyr", "abjData", "purrr", "glue"))
 
 # Importando os dados para o R
 
-Para importar nossos dados para o R, primeiramente utilizamos a função `list.files()`, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.
+Para importar os dados para o R, primeiramente utilizamos a função `list.files()`, que nos retorna um vetor com o caminho de todos os arquivos contidos em um determinado diretório, nesse caso, arquivos do tipo csv.
 
 ```{r}
 # lista todos os arquivos csv contidos na minha pasta "dados/" 
@@ -81,7 +80,6 @@ Como argumentos para `read_csv2()` passamos o encoding dos nossos arquivos csv d
 
 ```{r}
 # visualizando a lista
-
 morte_infantil
 ```
 
@@ -116,7 +114,7 @@ A função `left_join()` possui os seguintes argumentos:
 
 `left_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)`
 
-Para o caso em questão, precisamos somente dos três primeiros. `x` e `y`correpondem aos dois conjuntos de dados que desejamos mesclar. Para o `by`, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente `by = "nome da coluna"`, já quando os nomes das colunas são diferentes, usamos `by = c("nome da coluna em x" = "nome da coluna em y")`.
+Para o caso em questão, precisamos somente dos três primeiros. `x` e `y`correspondem aos dois conjuntos de dados que desejamos juntar. Para o `by`, passamos o nome da coluna (ou colunas) que usaremos como chave para mesclar os dados. Quando o nome da coluna é o mesmo em ambos, usamos somente `by = "nome da coluna"`, já quando os nomes das colunas são diferentes, usamos `by = c("nome da coluna em x" = "nome da coluna em y")`.
 
 O `left_join()` irá retornar todas as linhas de `x` e todas as colunas de `x` e `y`. As linhas em `x` que não possuem uma correspondente em `y` são preenchidas automaticamente com `NA`. Talvez tudo isso tenha ficado um pouco confuso, mas com exemplos pode ficar mais claro.
 
@@ -181,7 +179,8 @@ tbl_2 <- tibble::tribble(
   11111111111, "São Paulo"     , "SP",
   22222222222, "Mossoró"       , "RN",
   33333333333, "Natal"         , "RN",
-  44444444444, "Rio de Janeiro", "RJ"
+  44444444444, "Rio de Janeiro", "RJ",
+  66666666666, "Recife"        , "PE"  
 )
 tbl_2
 ```
@@ -189,12 +188,22 @@ tbl_2
 Observe agora que a coluna `cpf` da `tbl_1` está com uma linha a mais e que esta não possui uma correspondente no segundo data frame. Além disso, o nome da coluna com o CPF dos clientes está diferente na `tbl_2`. Neste caso, o join ficaria assim:
 
 ```{r}
-left_join(x = tbl_1, y = tbl_2, by = c("cpf" = "cpf_cliente"))
+tbl_1 %>% 
+  left_join(tbl_2, by = c("cpf" = "cpf_cliente"))
 ```
 
-# Mesclando os conjuntos de dados
+Por fim, vale ressaltar que a ordem que passamos as tabelas no `left_join()` é importante. O resultado seria diferente se fizéssemos assim:
 
-Agora que importamos todos os dados que precisamos e sabemos como funciona o `left_join()`, podemos enfim mesclar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos `by = c("codigo" = "muni_id_6")`.
+```{r}
+tbl_2 %>% 
+  left_join(tbl_1, by = c("cpf_cliente" = "cpf"))
+```
+
+No primeiro caso, todas as linhas da `tbl_1` são retornadas, já no segundo, todas as linhas da `tbl_2` é que são retornadas. 
+
+# Juntando os conjuntos de dados
+
+Agora que importamos todos os dados que precisamos e sabemos como funciona o `left_join()`, podemos enfim juntar nossos dados do DATASUS com os da nossa base auxiliar. Neste caso, como coluna chave para a mesclagem utilizaremos `by = c("codigo" = "muni_id_6")`.
 
 Uma das maneiras de fazer o left_join em nossos dados é assim:
 
@@ -265,7 +274,7 @@ walk(
 )
 ```
 
-**O caminho que passei no argumento `file` é relativo ao meu projeto e pode ser diferente no seu caso**. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador. 
+O caminho que passei no argumento `file` é relativo ao meu projeto e pode ser diferente no seu caso. Se for, é só substituir pelo caminho da pasta onde deseja salvar os arquivos exportados no seu computador. 
 
 Se desejar "empilhar" todos os anos e exportar tudo em um único arquivo csv, use:
 

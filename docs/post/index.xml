@@ -8,14 +8,23 @@
     <language>en</language>
     <managingEditor>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</managingEditor>
     <webMaster>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</webMaster>
-    <lastBuildDate>Fri, 16 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Jul 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://santhiago-cristiano.github.io/site/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Como mesclar conjuntos de dados no R. Parte I: left_join()</title>
+      <title>Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()</title>
+      <link>https://santhiago-cristiano.github.io/site/post/2021-07-18-innerjoin/</link>
+      <pubDate>Tue, 20 Jul 2021 00:00:00 +0000</pubDate>
+      <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
+      <guid>https://santhiago-cristiano.github.io/site/post/2021-07-18-innerjoin/</guid>
+      <description>Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.</description>
+    </item>
+    
+    <item>
+      <title>Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()</title>
       <link>https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/</link>
       <pubDate>Fri, 16 Jul 2021 00:00:00 +0000</pubDate>
       <author>santhiago_cristiano@hotmail.com (Santhiago Cristiano)</author>
       <guid>https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/</guid>
-      <description>Neste primeiro post do site, demonstrarei como podemos mesclar (juntar) dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.</description>
+      <description>Neste primeiro post do site, demonstrarei como podemos juntar dois ou mais conjuntos de dados no R por meio de uma ou mais colunas em comum entre eles (chaves) utilizando a função left_join() do pacote {dplyr}.</description>
     </item>
     
   </channel>

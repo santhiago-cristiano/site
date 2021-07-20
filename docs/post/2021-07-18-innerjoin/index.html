@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="br" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join() - Santhiago Cristiano</title>
+  <meta name="description" content="Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.">
+  <meta name="author" content="Santhiago Cristiano"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Santhiago Cristiano",
+    
+    "url": "https:\/\/santhiago-cristiano.github.io\/site\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/santhiago-cristiano.github.io\/site\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/santhiago-cristiano.github.io\/site\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/santhiago-cristiano.github.io\/site\/post\/2021-07-18-innerjoin\/",
+          "name": "Como juntar conjuntos de dados no r. parte ii dplyr inner join()"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Santhiago Cristiano"
+  },
+  "headline": "Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()",
+  "description" : "Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.",
+  "inLanguage" : "br",
+  "wordCount":  1891 ,
+  "datePublished" : "2021-07-20T00:00:00",
+  "dateModified" : "2021-07-20T00:00:00",
+  "image" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
+  "keywords" : [ "dplyr, joins, R, inner join" ],
+  "mainEntityOfPage" : "https:\/\/santhiago-cristiano.github.io\/site\/post\/2021-07-18-innerjoin\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/santhiago-cristiano.github.io\/site\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/santhiago-cristiano.github.io\/site\/img\/SC.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()" />
+<meta property="og:description" content="Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.">
+<meta property="og:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
+<meta property="og:url" content="https://santhiago-cristiano.github.io/site/post/2021-07-18-innerjoin/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Santhiago Cristiano" />
+
+  <meta name="twitter:title" content="Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()" />
+  <meta name="twitter:description" content="Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função inner_join() do pacote {dplyr}.">
+  <meta name="twitter:image" content="https://santhiago-cristiano.github.io/site/img/SC.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://santhiago-cristiano.github.io/site/img/myfavicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.85.0" />
+  <link rel="alternate" href="https://santhiago-cristiano.github.io/site/index.xml" type="application/rss+xml" title="Santhiago Cristiano"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/highlight.min.css" /><link rel="stylesheet" href="https://santhiago-cristiano.github.io/site/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Ver navegação</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://santhiago-cristiano.github.io/site/">Santhiago Cristiano</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Posts" href="/site/">Posts</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Sobre" href="/site/page/about/">Sobre</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contato" href="/site/page/contact/">Contato</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/site/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Santhiago Cristiano" href="https://santhiago-cristiano.github.io/site/">
+            <img class="avatar-img" src="https://santhiago-cristiano.github.io/site/img/SC.png" alt="Santhiago Cristiano" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Como juntar conjuntos de dados no R. Parte II: dplyr::inner_join()</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Postado em 20/07/2021
+  
+  
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Santhiago Cristiano
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Dando continuidade a série de posts sobre mesclagem de dados no R, hoje falarei sobre a função <code>inner_join()</code> do pacote <code>{dplyr}</code>. Na <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">primeira parte</a>, demonstrei como podemos mesclar dois ou mais conjuntos de dados usando a função <code>left_join()</code> também do <code>{dplyr}</code></p>
+<p>Bom, seguindo em frente, utilizarei os mesmos conjuntos de dados do <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">primeiro post</a>, que podem ser baixados <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-16-leftjoin/dados-mesclados">clicando aqui</a>. Esses são os dados que foram exportados após feita a mesclagem utilizando <code>left_join()</code>.</p>
+<h1 id="pacotes-e-importação-dos-dados">Pacotes e importação dos dados</h1>
+<p>Todo esse processo inicial é semelhante ao do primeiro post: carregamos os pacotes que serão usados e em seguida importamos os dados para o R. Como já descrevi esse processo com mais detalhes na <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/">parte I</a>, serei breve dessa vez para não se tornar repetitivo.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span>
+</code></pre></div><p>O <code>{readr}</code> serve para fazermos a leitura e importação dos dados para o R; o <code>{dplyr}</code> ;
+e o <code>{purrr}</code> tem funções que simplificam o processo de loop e será útil para importar todos os conjuntos de dados de uma única vez.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">arquivos_csv</span> <span class="o">&lt;-</span> <span class="nf">list.files</span><span class="p">(</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s">&#34;./dados/&#34;</span><span class="p">,</span>
+  <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#34;*.csv&#34;</span><span class="p">,</span>
+  <span class="n">full.names</span> <span class="o">=</span> <span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">arquivos_csv</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## [1] &#34;./dados/2010-leftjoin.csv&#34; &#34;./dados/2011-leftjoin.csv&#34;
+## [3] &#34;./dados/2012-leftjoin.csv&#34;
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">(</span>
+  <span class="n">arquivos_csv</span><span class="p">,</span>
+  <span class="n">read_csv2</span><span class="p">,</span>
+  <span class="nf">locale</span><span class="p">(</span><span class="n">encoding</span> <span class="o">=</span> <span class="s">&#34;latin1&#34;</span><span class="p">),</span>
+  <span class="n">col_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  <span class="n">col_types</span> <span class="o">=</span> <span class="s">&#34;ccccdi&#34;</span>
+<span class="p">)</span> <span class="o">%&gt;%</span> 
+  <span class="nf">set_names</span><span class="p">(</span><span class="m">2010</span><span class="o">:</span><span class="m">2012</span><span class="p">)</span>
+
+<span class="n">mortes_infantis</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## $`2010`
+## # A tibble: 2,386 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     5  2010
+##  2 1100023  Norte  RO    Ariquemes                29  2010
+##  3 1100049  Norte  RO    Cacoal                   14  2010
+##  4 1100064  Norte  RO    Colorado do Oeste         2  2010
+##  5 1100072  Norte  RO    Corumbiara                1  2010
+##  6 1100080  Norte  RO    Costa Marques             1  2010
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           3  2010
+##  8 1100106  Norte  RO    Guajará-Mirim            13  2010
+##  9 1100114  Norte  RO    Jaru                      8  2010
+## 10 1100122  Norte  RO    Ji-Paraná                31  2010
+## # ... with 2,376 more rows
+## 
+## $`2011`
+## # A tibble: 2,384 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     3  2011
+##  2 1100023  Norte  RO    Ariquemes                15  2011
+##  3 1100049  Norte  RO    Cacoal                   14  2011
+##  4 1100056  Norte  RO    Cerejeiras                2  2011
+##  5 1100072  Norte  RO    Corumbiara                1  2011
+##  6 1100080  Norte  RO    Costa Marques             1  2011
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           6  2011
+##  8 1100106  Norte  RO    Guajará-Mirim             5  2011
+##  9 1100114  Norte  RO    Jaru                      2  2011
+## 10 1100122  Norte  RO    Ji-Paraná                10  2011
+## # ... with 2,374 more rows
+## 
+## $`2012`
+## # A tibble: 2,313 x 6
+##    cod_ibge regiao uf    municipio             total   ano
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
+##  1 1100015  Norte  RO    Alta Floresta D&#39;Oeste     1  2012
+##  2 1100023  Norte  RO    Ariquemes                14  2012
+##  3 1100049  Norte  RO    Cacoal                   12  2012
+##  4 1100056  Norte  RO    Cerejeiras                3  2012
+##  5 1100064  Norte  RO    Colorado do Oeste         2  2012
+##  6 1100080  Norte  RO    Costa Marques             2  2012
+##  7 1100098  Norte  RO    Espigão D&#39;Oeste           1  2012
+##  8 1100106  Norte  RO    Guajará-Mirim             3  2012
+##  9 1100114  Norte  RO    Jaru                      6  2012
+## 10 1100122  Norte  RO    Ji-Paraná                10  2012
+## # ... with 2,303 more rows
+</code></pre></div><p>A função <code>list.files()</code> lista todos os arquivos csv contidos na pasta <code>&quot;dados/&quot;</code> e nos retorna um vetor, já a função <code>purrr::map()</code> itera sobre cada elemento desse vetor e aplica a função <code>readr::read_csv2()</code> em cada um deles nos retornando uma lista de data frames.</p>
+<h1 id="dplyrinner_join">dplyr::inner_join()</h1>
+<p>A função <code>inner_join()</code> possui os mesmos argumentos do <code>left_join()</code>:</p>
+<p><code>inner_join(x, y, by = NULL, copy = FALSE, suffix = c(&quot;.x&quot;, &quot;.y&quot;), ...)</code></p>
+<p>A diferença entre as duas é que, enquanto <code>left_join()</code> nos retorna todas as linhas de <code>x</code>, todas as colunas de <code>x</code> e <code>y</code> e preenche com <code>NA</code> as linhas em <code>x</code> que não possuem uma correspondente em <code>y</code>, <code>inner_join()</code> retorna <strong>somente as linhas de <code>x</code> onde existem valores correpondentes em <code>y</code></strong>, ou seja, teremos como retorno um novo conjunto de dados em que estão presentes somente as linhas que são comuns entre ambos. Além disso, <code>inner_join()</code> também retorna todas as colunas de <code>x</code> e <code>y</code>.</p>
+<p>Novamente, <code>x</code> e <code>y</code> correspondem aos conjuntos de dados que desejamos unir, enquanto <code>by</code> recebe o nome da coluna (ou colunas, pode ser mais de uma) que servirá como chave para unir os dados. <code>by = &quot;nome da coluna&quot;</code> é usado quando o nome da coluna é o mesmo em ambos os conjuntos de dados, e <code>by = c(&quot;nome da coluna em x&quot; = &quot;nome da coluna em y&quot;)</code> quando os nomes das colunas são diferentes. Como sempre, exemplos podem nos ajudar a entender melhor como as coisas acontecem.</p>
+<h2 id="exemplo">Exemplo</h2>
+<p>Admita que tenhamos dois conjuntos de dados com o desempenho dos alunos do ensino fundamental de determinada escola do Brasil em dois anos diferentes, 2019 e 2020, e desejamos unir esses dados trazendo somente os alunos que estão presentes nos dois anos para verificar se houve uma melhora ou piora no desempenho de cada um deles de um ano para o outro.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2019</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span> <span class="n">matricula</span><span class="p">,</span>   <span class="o">~</span> <span class="n">nome</span><span class="p">,</span>     <span class="o">~</span> <span class="n">media</span><span class="p">,</span>
+  <span class="m">10</span><span class="p">,</span>            <span class="s">&#34;João&#34;</span><span class="p">,</span>     <span class="m">7.1</span><span class="p">,</span>
+  <span class="m">11</span><span class="p">,</span>            <span class="s">&#34;José&#34;</span><span class="p">,</span>     <span class="m">8.5</span><span class="p">,</span>
+  <span class="m">12</span><span class="p">,</span>            <span class="s">&#34;Maria&#34;</span><span class="p">,</span>    <span class="m">5.2</span>
+<span class="p">)</span>
+
+<span class="n">alunos_2020</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="o">::</span><span class="nf">tribble</span><span class="p">(</span>
+  <span class="o">~</span> <span class="n">matricula</span><span class="p">,</span>    <span class="o">~</span> <span class="n">nome</span><span class="p">,</span>       <span class="o">~</span> <span class="n">media</span><span class="p">,</span>
+  <span class="m">9</span><span class="p">,</span>              <span class="s">&#34;Joana&#34;</span><span class="p">,</span>      <span class="m">8.0</span><span class="p">,</span>
+  <span class="m">10</span><span class="p">,</span>             <span class="s">&#34;João&#34;</span><span class="p">,</span>       <span class="m">9.0</span><span class="p">,</span>     
+  <span class="m">11</span><span class="p">,</span>             <span class="s">&#34;José&#34;</span><span class="p">,</span>       <span class="m">5.4</span><span class="p">,</span>
+  <span class="m">12</span><span class="p">,</span>             <span class="s">&#34;Maria&#34;</span><span class="p">,</span>      <span class="m">8.7</span><span class="p">,</span>
+  <span class="m">13</span><span class="p">,</span>             <span class="s">&#34;Ana&#34;</span><span class="p">,</span>        <span class="m">10.0</span><span class="p">,</span>
+  <span class="m">14</span><span class="p">,</span>             <span class="s">&#34;Francisco&#34;</span><span class="p">,</span>  <span class="m">4.3</span>
+<span class="p">)</span>
+</code></pre></div><p>Podemos utilizar a coluna com o número da matrícula como chave para unir os dados, passando-a para o argumento <code>by</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2019</span> <span class="o">%&gt;%</span>
+  <span class="nf">inner_join</span><span class="p">(</span><span class="n">alunos_2020</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;matricula&#34;</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 3 x 5
+##   matricula nome.x media.x nome.y media.y
+##       &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;
+## 1        10 João       7.1 João       9  
+## 2        11 José       8.5 José       5.4
+## 3        12 Maria      5.2 Maria      8.7
+</code></pre></div><p>Repare que, como as colunas <code>nome</code> e <code>media</code> existem nas duas tabelas, é acrescentado automaticamente um sufixo em cada uma delas para evitar nomes de colunas repetidos. Nesse caso, <code>.x</code> é o sufixo referente as colunas do data frame <code>alunos_2019</code> e <code>.y</code> é o sufixo referente as colunas de <code>alunos_2020</code>. É possível alterar esses nomes passando os sufixos que desejamos acrescentar para o argumento <code>suffix</code>. Dessa forma:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2019</span> <span class="o">%&gt;%</span>
+  <span class="nf">inner_join</span><span class="p">(</span><span class="n">alunos_2020</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;matricula&#34;</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2019&#34;</span><span class="p">,</span> <span class="s">&#34;_2020&#34;</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 3 x 5
+##   matricula nome_2019 media_2019 nome_2020 media_2020
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
+## 1        10 João             7.1 João             9  
+## 2        11 José             8.5 José             5.4
+## 3        12 Maria            5.2 Maria            8.7
+</code></pre></div><p>Note que a ordem que os sufixos são passados importa! Como os dados referentes ao ano de 2019 vem primeiro, passamos primeiro o sufixo de 2019 e depois o de 2020. Se fosse ao contrário, seria assim:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">alunos_2020</span> <span class="o">%&gt;%</span>
+  <span class="nf">inner_join</span><span class="p">(</span><span class="n">alunos_2019</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;matricula&#34;</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2020&#34;</span><span class="p">,</span> <span class="s">&#34;_2019&#34;</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## # A tibble: 3 x 5
+##   matricula nome_2020 media_2020 nome_2019 media_2019
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
+## 1        10 João             9   João             7.1
+## 2        11 José             5.4 José             8.5
+## 3        12 Maria            8.7 Maria            5.2
+</code></pre></div><h1 id="juntando-os-conjuntos-de-dados">Juntando os conjuntos de dados</h1>
+<p>Feito essa explicação, agora vamos juntar os conjuntos de dados que foram importados lá no ínicio mantendo somente os municípios que estão presentes em todos os anos (2010, 2011 e 2012). Como chave para unir os dados, utilizarei a coluna <code>cod_ibge</code>, que possui o código IBGE de 7 digítos para cada município.</p>
+<p>Uma das maneiras de unir nossos dados é assim:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="n">mortes_infantis[[</span><span class="s">&#34;2010&#34;</span><span class="n">]]</span> <span class="o">%&gt;%</span>
+  <span class="nf">inner_join</span><span class="p">(</span>
+    <span class="n">mortes_infantis[[</span><span class="s">&#34;2011&#34;</span><span class="n">]]</span><span class="p">,</span>
+    <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">,</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2010&#34;</span><span class="p">,</span> <span class="s">&#34;_2011&#34;</span><span class="p">)</span>
+  <span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">inner_join</span><span class="p">(</span><span class="n">mortes_infantis[[</span><span class="s">&#34;2012&#34;</span><span class="n">]]</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">)</span>
+</code></pre></div><p>Ok. Parece bom. Mas e se pudéssemos simplificar isso deixando nosso código mais limpo e legível? Com <code>purrr::reduce()</code> isso é possível!</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">mortes_infantis</span><span class="p">,</span>
+                                <span class="n">inner_join</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&#34;cod_ibge&#34;</span><span class="p">,</span>
+                                <span class="n">suffix</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2010&#34;</span><span class="p">,</span> <span class="s">&#34;_2011&#34;</span><span class="p">))</span>
+</code></pre></div><p>Para a função <code>reduce()</code> passamos a lista que contém os data frames que queremos juntar e a função <code>inner_join()</code> com os seus devidos argumentos. Simples assim! É incrível O que conseguimos fazer utilizando o <code>{purrr}</code>, pretendo demonstrar um pouco mais do seu &ldquo;poder&rdquo; em um post futuro.</p>
+<p>Agora temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">glimpse</span><span class="p">(</span><span class="n">mortes_infantis_inner</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## Rows: 1,447
+## Columns: 16
+## $ cod_ibge       &lt;chr&gt; &#34;1100015&#34;, &#34;1100023&#34;, &#34;1100049&#34;, &#34;1100080&#34;, &#34;1100098&#34;, ~
+## $ regiao_2010    &lt;chr&gt; &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;~
+## $ uf_2010        &lt;chr&gt; &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;~
+## $ municipio_2010 &lt;chr&gt; &#34;Alta Floresta D&#39;Oeste&#34;, &#34;Ariquemes&#34;, &#34;Cacoal&#34;, &#34;Costa ~
+## $ total_2010     &lt;dbl&gt; 5, 29, 14, 1, 3, 13, 8, 31, 3, 7, 307, 2, 2, 25, 2, 1, ~
+## $ ano_2010       &lt;int&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2~
+## $ regiao_2011    &lt;chr&gt; &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;~
+## $ uf_2011        &lt;chr&gt; &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;~
+## $ municipio_2011 &lt;chr&gt; &#34;Alta Floresta D&#39;Oeste&#34;, &#34;Ariquemes&#34;, &#34;Cacoal&#34;, &#34;Costa ~
+## $ total_2011     &lt;dbl&gt; 3, 15, 14, 1, 6, 5, 2, 10, 6, 6, 254, 1, 4, 21, 3, 1, 7~
+## $ ano_2011       &lt;int&gt; 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2~
+## $ regiao         &lt;chr&gt; &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;~
+## $ uf             &lt;chr&gt; &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;~
+## $ municipio      &lt;chr&gt; &#34;Alta Floresta D&#39;Oeste&#34;, &#34;Ariquemes&#34;, &#34;Cacoal&#34;, &#34;Costa ~
+## $ total          &lt;dbl&gt; 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7~
+## $ ano            &lt;int&gt; 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2~
+</code></pre></div><p>Como era esperado, foi acrescentado o sufixo <code>_2010</code> para as colunas do ano 2010 e <code>_2011</code> para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, como nesse caso sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essa colunas repetidas:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">mortes_infantis_inner</span> <span class="o">&lt;-</span> <span class="n">mortes_infantis_inner</span> <span class="o">%&gt;%</span>
+  <span class="nf">select</span><span class="p">(</span>
+    <span class="o">!</span><span class="p">(</span><span class="nf">contains</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;regiao&#34;</span><span class="p">,</span> <span class="s">&#34;uf&#34;</span><span class="p">,</span> <span class="s">&#34;municipio&#34;</span><span class="p">,</span> <span class="s">&#34;ano&#34;</span><span class="p">))</span> <span class="o">&amp;</span>
+      <span class="nf">ends_with</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;_2010&#34;</span><span class="p">,</span> <span class="s">&#34;_2011&#34;</span><span class="p">))),</span>
+    <span class="o">-</span><span class="n">ano</span>
+  <span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">rename</span><span class="p">(</span><span class="n">total_2012</span> <span class="o">=</span> <span class="n">total</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">relocate</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">regiao</span><span class="p">,</span> <span class="n">uf</span><span class="p">,</span> <span class="n">municipio</span><span class="p">),</span> <span class="n">.after</span> <span class="o">=</span> <span class="n">cod_ibge</span><span class="p">)</span>
+</code></pre></div><p>Para remover todas as colunas desejadas, peço para a função <code>select()</code> do <code>{dplyr}</code> selecionar somente as colunas que <strong>ao mesmo tempo</strong> não contenham as palavras <code>&quot;regiao&quot;</code>, <code>&quot;uf&quot;</code>, <code>&quot;municipio&quot;</code> e <code>&quot;ano&quot;</code> <strong>e</strong> termine com os sufixos <code>&quot;_2010&quot;</code> ou <code>&quot;_2011&quot;</code>. Além disso, apenas renomeio e reposiciono outras colunas com <code>dplyr::rename()</code> e <code>dplyr::relocate()</code>, respectivamente.</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">glimpse</span><span class="p">(</span><span class="n">mortes_infantis_inner</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">## Rows: 1,447
+## Columns: 7
+## $ cod_ibge   &lt;chr&gt; &#34;1100015&#34;, &#34;1100023&#34;, &#34;1100049&#34;, &#34;1100080&#34;, &#34;1100098&#34;, &#34;110~
+## $ regiao     &lt;chr&gt; &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Norte&#34;, &#34;Nort~
+## $ uf         &lt;chr&gt; &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;, &#34;RO&#34;,~
+## $ municipio  &lt;chr&gt; &#34;Alta Floresta D&#39;Oeste&#34;, &#34;Ariquemes&#34;, &#34;Cacoal&#34;, &#34;Costa Marq~
+## $ total_2010 &lt;dbl&gt; 5, 29, 14, 1, 3, 13, 8, 31, 3, 7, 307, 2, 2, 25, 2, 1, 5, 4~
+## $ total_2011 &lt;dbl&gt; 3, 15, 14, 1, 6, 5, 2, 10, 6, 6, 254, 1, 4, 21, 3, 1, 7, 39~
+## $ total_2012 &lt;dbl&gt; 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7, 37~
+</code></pre></div><p>Concluído todos os passos, agora é só exportar os dados:</p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="nf">write.csv2</span><span class="p">(</span>
+  <span class="n">mortes_infantis_inner</span><span class="p">,</span>
+  <span class="n">file</span> <span class="o">=</span> <span class="s">&#34;./dados-inner/mortes_infantis_inner.csv&#34;</span><span class="p">,</span>
+  <span class="n">row.names</span> <span class="o">=</span> <span class="kc">FALSE</span>
+<span class="p">)</span>
+</code></pre></div><p>É isso. Finalizo por aqui. O código completo desse post está disponível no meu <a href="https://github.com/santhiago-cristiano/site-scripts/tree/main/2021/2021-07-20-innerjoin">GitHub</a>.</p>
+<p>Até a próxima 👋.</p>
+<h1 id="links-úteis">Links Úteis</h1>
+<ul>
+<li>
+<p><a href="https://readr.tidyverse.org/">https://readr.tidyverse.org/</a></p>
+</li>
+<li>
+<p><a href="https://dplyr.tidyverse.org/">https://dplyr.tidyverse.org/</a></p>
+</li>
+<li>
+<p><a href="https://dplyr.tidyverse.org/reference/join.html">https://dplyr.tidyverse.org/reference/join.html</a></p>
+</li>
+<li>
+<p><a href="https://purrr.tidyverse.org/">https://purrr.tidyverse.org/</a></p>
+</li>
+</ul>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/dplyr/">dplyr</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/joins/">joins</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/r/">R</a>&nbsp;
+            
+              <a href="https://santhiago-cristiano.github.io/site//tags/inner-join/">inner join</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f&amp;text=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20II%3a%20dplyr%3a%3ainner_join%28%29&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20II%3a%20dplyr%3a%3ainner_join%28%29" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20II%3a%20dplyr%3a%3ainner_join%28%29" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f&amp;title=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20II%3a%20dplyr%3a%3ainner_join%28%29" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fsanthiago-cristiano.github.io%2fsite%2fpost%2f2021-07-18-innerjoin%2f&amp;description=Como%20juntar%20conjuntos%20de%20dados%20no%20R.%20Parte%20II%3a%20dplyr%3a%3ainner_join%28%29" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">Veja também</h4>
+                  <ul>
+                
+                
+                    <li><a href="/site/post/2021-07-15-leftjoin/">Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://santhiago-cristiano.github.io/site/post/2021-07-15-leftjoin/" data-toggle="tooltip" data-placement="top" title="Como juntar conjuntos de dados no R. Parte I: dplyr::left_join()">&larr; Post anterior</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:santhiago_cristiano@hotmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/santhiago-cristiano" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/username" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Santhiago Cristiano
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2021
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://santhiago-cristiano.github.io/site/">Santhiago Cristiano</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.85.0</a> &nbsp;&bull;&nbsp; Tema <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adaptado de <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://santhiago-cristiano.github.io/site/js/main.js"></script>
+<script src="https://santhiago-cristiano.github.io/site/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://santhiago-cristiano.github.io/site/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

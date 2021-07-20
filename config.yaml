@@ -28,7 +28,7 @@ Params:
   showRelatedPosts: yes
   socialShare: yes
   #homeTitle: Título
-  subtitle: Seja bem vindo (a) ao meu site pessoal. Aqui compartilho meu aprendizado sobre R e Python.
+  subtitle: Seja bem vindo (a) ao meu site pessoal. Aqui escrevo sobre R e Python.
   useHLJS: yes
   wordCount: no
 Author:
