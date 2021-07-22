@@ -221,13 +221,15 @@ Ok. Parece bom. Mas e se pudéssemos simplificar isso deixando nosso código mai
 
 
 ```r
-mortes_infantis_inner <- reduce(mortes_infantis,
-                                inner_join,
-                                by = "cod_ibge",
-                                suffix = c("_2010", "_2011"))
+mortes_infantis_inner <- reduce(
+  mortes_infantis,
+  inner_join,
+  by = "cod_ibge",
+  suffix = c("_2010", "_2011")
+)
 ```
 
-Para a função `reduce()` passamos a lista que contém os data frames que queremos juntar, e a função `inner_join()` com os seus devidos argumentos. Simples assim! É incrível o que conseguimos fazer utilizando o `{purrr}`, pretendo demonstrar um pouco mais do seu "poder" em um post futuro.
+Para a função `reduce()` passamos a lista que contém os data frames que queremos juntar e a função `inner_join()` com os seus devidos argumentos. Simples assim! É incrível o que conseguimos fazer utilizando o `{purrr}`.
 
 Agora, temos um novo conjunto de dados que contém somente os municípios que estavam presentes em todos os anos:
 
@@ -256,7 +258,8 @@ glimpse(mortes_infantis_inner)
 ## $ total          <dbl> 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7~
 ## $ ano            <int> 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2~
 ```
-Como era esperado, foi acrescentado o sufixo `_2010` para as colunas do ano 2010 e `_2011` para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, no entanto, como sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essas colunas repetidas:
+
+Como esperado, foi acrescentado o sufixo `_2010` para as colunas do ano 2010 e `_2011` para as colunas do ano 2011. As últimas 5 colunas sem sufixo, são referentes ao ano de 2012. Note que agora temos diversas colunas com região, UF e município, no entanto, como sei que o conteúdo é o mesmo para todas elas, podemos jogar fora essas colunas repetidas:
 
 
 ```r
@@ -289,7 +292,7 @@ glimpse(mortes_infantis_inner)
 ## $ total_2012 <dbl> 1, 14, 12, 2, 1, 3, 6, 10, 3, 3, 270, 1, 3, 26, 2, 2, 7, 37~
 ```
 
-Concluído todos os passos, agora é só exportar os dados:
+Concluído todo o processo, agora é só exportar os dados:
 
 
 ```r
@@ -304,7 +307,7 @@ write.csv2(
 
 Até a próxima 👋. 
 
-# Links Úteis
+# Saiba Mais
 
 - https://readr.tidyverse.org/
 
